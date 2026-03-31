@@ -1,4 +1,4 @@
-package org.home;
+package org.ollama;
 
 import java.awt.Color;
 import java.awt.Cursor;

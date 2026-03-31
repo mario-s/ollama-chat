@@ -1,4 +1,4 @@
-package org.home;
+package org.ollama;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package org.home;
+package org.ollama;
 
 import java.awt.BorderLayout;
 import java.util.concurrent.CompletableFuture;

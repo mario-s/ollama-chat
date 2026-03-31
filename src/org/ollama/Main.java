@@ -1,4 +1,4 @@
-package org.home;
+package org.ollama;
 
 import io.github.ollama4j.Ollama;
 import java.util.List;
@@ -12,6 +12,5 @@ public class Main {
             ChatFrame f = new ChatFrame();
             f.display();
         });
-
     }
 }
