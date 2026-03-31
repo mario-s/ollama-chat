@@ -1,7 +1,6 @@
 package org.home;
 
 import java.awt.BorderLayout;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -18,11 +17,16 @@ public class ChatFrame extends JFrame{
     private OllamaClient client;
     private ModelList modelList;
     private ChatWindow chat;
+    private WaitPanel wait;
 
     public ChatFrame() {
         super("Ollama");
         this.client = new OllamaClient();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        modelList = new ModelList();
+        chat = new ChatWindow();
+        wait = new WaitPanel();
 
         buildUi();
     }
@@ -33,14 +37,14 @@ public class ChatFrame extends JFrame{
 
         Border lowered = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 
-        modelList = new ModelList();
         modelList.setBorder(lowered);
         getContentPane().add(modelList, BorderLayout.PAGE_START);
 
-        chat = new ChatWindow();
         chat.setBorder(lowered);
         JScrollPane scrollPane = new JScrollPane(chat);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        setGlassPane(wait);
     }
 
     void display() {
@@ -63,9 +67,21 @@ public class ChatFrame extends JFrame{
     private void startChat() {
         chat.setText("what is the capital of france?");
         invoke(() -> {
+            lockUi();
             String question = chat.getText();
             return client.chat(question);
-        }, chat::appendAnswer);
+        }, a -> {
+            chat.appendAnswer(a);
+            unlockUi();
+        });
+    }
+
+    private void lockUi() {
+        wait.setVisible(true);
+    }
+
+    private void unlockUi() {
+        wait.setVisible(false);
     }
 
     private <T> void invoke(Supplier<T> supplier, Consumer<T> consumer) {
