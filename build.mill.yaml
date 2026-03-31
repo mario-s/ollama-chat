@@ -1,0 +1,10 @@
+mill-jvm-version: temurin:25
+
+extends: JavaModule
+
+javacOptions: [-deprecation]
+jvmVersion: 25.0.2
+
+mainClass: org.home.Main
+mvnDeps:
+- io.github.ollama4j:ollama4j:1.1.6
