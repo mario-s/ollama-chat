@@ -64,7 +64,7 @@ final class Frame extends JFrame {
         getContentPane().add(new JScrollPane(chatPane), BorderLayout.CENTER);
 
         input.setBorder(lowered);
-        JPanel endPanel = new JPanel(new BorderLayout());
+        var endPanel = new JPanel(new BorderLayout());
         endPanel.add(new JScrollPane(input), BorderLayout.CENTER);
         endPanel.add(submit, BorderLayout.LINE_END);
         getContentPane().add(endPanel, BorderLayout.PAGE_END);
