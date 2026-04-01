@@ -8,3 +8,4 @@ jvmVersion: 25.0.2
 mainClass: org.ollama.Main
 mvnDeps:
 - io.github.ollama4j:ollama4j:1.1.6
+- org.slf4j:slf4j-simple:2.0.13
