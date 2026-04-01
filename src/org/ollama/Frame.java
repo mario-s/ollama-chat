@@ -1,24 +1,29 @@
 package org.ollama;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-final class Frame extends JFrame{
+final class Frame extends JFrame implements ActionListener{
 
     private final Client client;
     private final ModelList modelList;
     private final ChatPane chatPane;
     private final JTextArea input;
+    private final JButton submit;
     private final WaitPanel wait;
 
     private Chat chat;
@@ -31,6 +36,8 @@ final class Frame extends JFrame{
         modelList = new ModelList();
         chatPane = new ChatPane();
         input = new JTextArea();
+        submit = new JButton("send");
+        submit.addActionListener(this);
         wait = new WaitPanel();
 
         buildUi();
@@ -49,7 +56,13 @@ final class Frame extends JFrame{
         getContentPane().add(new JScrollPane(chatPane), BorderLayout.CENTER);
 
         input.setBorder(lowered);
-        getContentPane().add(new JScrollPane(input), BorderLayout.PAGE_END);
+
+        JPanel endPanel = new JPanel(new BorderLayout());
+        endPanel.add(new JScrollPane(input), BorderLayout.CENTER);
+
+        endPanel.add(submit, BorderLayout.LINE_END);
+
+        getContentPane().add(endPanel, BorderLayout.PAGE_END);
 
         setGlassPane(wait);
     }
@@ -59,18 +72,14 @@ final class Frame extends JFrame{
         setLocationRelativeTo(null);
         setVisible(true);
 
+        //starting phrase
+        input.setText("what is the capital of france?");
+
         invoke();
     }
 
-    private void invoke() {
-        invoke(client::getLocalModels, r -> {
-            startChat();
-            modelList.setModels(r);
-        });
-    }
-
-    private void startChat() {
-        input.setText("what is the capital of france?");
+    @Override
+    public void actionPerformed(ActionEvent e) {
         invoke(() -> {
             lockUi();
             return ask();
@@ -78,6 +87,10 @@ final class Frame extends JFrame{
             chatPane.addAnswer(a);
             unlockUi();
         });
+    }
+
+    private void invoke() {
+        invoke(client::getLocalModels, modelList::setModels);
     }
 
     private void lockUi() {
