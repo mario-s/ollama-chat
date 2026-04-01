@@ -1,0 +1,4 @@
+extends: [build.JavaTests, TestModule.Junit6]
+jupiterVersion: "6.0.2"
+mvnDeps:
+- org.mockito:mockito-junit-jupiter:5.23.0
