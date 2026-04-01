@@ -19,6 +19,14 @@ final class ModelList extends JComboBox<Model> {
         models.forEach(this::addItem);
     }
 
+    String getSelectedModelName() {
+        Object item = getSelectedItem();
+        if (item instanceof Model model) {
+            return model.getName();
+        }
+        return "";
+    }
+
     private static class ModelRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(

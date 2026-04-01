@@ -62,13 +62,11 @@ final class Frame extends JFrame{
         invoke();
     }
 
-    void invoke() {
-        loadLocalModels();
-        startChat();
-    }
-
-    private void loadLocalModels() {
-        invoke(client::getLocalModels, modelList::setModels);
+    private void invoke() {
+        invoke(client::getLocalModels, r -> {
+            startChat();
+            modelList.setModels(r);
+        });
     }
 
     private void startChat() {
@@ -104,7 +102,7 @@ final class Frame extends JFrame{
 
     private Chat getChat() {
         if (chat == null) {
-            chat = client.createChat("gemma3:latest");
+            chat = client.createChat(modelList.getSelectedModelName());
         }
         return chat;
     }
