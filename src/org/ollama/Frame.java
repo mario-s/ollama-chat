@@ -30,7 +30,7 @@ final class Frame extends JFrame {
     private final Client client;
     private final ModelList modelList;
     private final ChatPane chatPane;
-    private final JTextArea input;
+    private final InputArea input;
     private final JButton submit;
     private final WaitPanel wait;
 
@@ -43,7 +43,7 @@ final class Frame extends JFrame {
         client = new Client();
         modelList = new ModelList();
         chatPane = new ChatPane();
-        input = new JTextArea();
+        input = new InputArea("What is in your mind?");
         wait = new WaitPanel();
         submit = new JButton();
 
@@ -100,9 +100,6 @@ final class Frame extends JFrame {
         setSize(400, 600);
         setLocationRelativeTo(null);
         setVisible(true);
-
-        //starting phrase
-        input.setText("what is the capital of france?");
 
         loadModels();
     }
