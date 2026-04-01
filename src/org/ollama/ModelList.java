@@ -1,13 +1,37 @@
 package org.ollama;
 
+import java.awt.Component;
 import java.util.List;
 
+import javax.swing.JComboBox;
 import javax.swing.JList;
+import javax.swing.DefaultListCellRenderer;
 
-final class ModelList extends JList<String> {
+import io.github.ollama4j.models.response.Model;
 
-    void setModelNames(List<String> names) {
-        String [] data = new String[names.size()];
-        setListData(names.toArray(data));
+final class ModelList extends JComboBox<Model> {
+
+    public ModelList() {
+        setRenderer(new ModelRenderer());
+    }
+
+    void setModels(List<Model> models) {
+        models.forEach(this::addItem);
+    }
+
+    private static class ModelRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(
+                JList<?> list, Object value, int index,
+                boolean isSelected, boolean hasFocus) {
+
+            super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
+
+            if (value instanceof Model model) {
+                setText(model.getName());
+            }
+
+            return this;
+        }
     }
 }

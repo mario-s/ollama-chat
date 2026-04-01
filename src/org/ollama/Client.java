@@ -2,6 +2,7 @@ package org.ollama;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,10 +25,19 @@ class Client {
         this.ollama = ollama;
     }
 
-    List<String> getLocalModels() {
-        List<String> models = Collections.emptyList();
+    /**
+     * Get the local available models in an alphabetic sorted order.
+     * @return a collection of local models
+     */
+    List<Model> getLocalModels() {
+        List<Model> models = Collections.emptyList();
         try {
-            models = this.ollama.listModels().stream().map(Model::getName).toList();
+            models = this.ollama.listModels();
+
+            models.sort(Comparator.comparing(
+                Model::getName,
+                String.CASE_INSENSITIVE_ORDER
+            ));
         } catch (OllamaException e) {
             throw new IllegalStateException(e);
         }

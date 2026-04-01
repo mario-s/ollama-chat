@@ -68,7 +68,7 @@ final class Frame extends JFrame{
     }
 
     private void loadLocalModels() {
-        invoke(client::getLocalModels, modelList::setModelNames);
+        invoke(client::getLocalModels, modelList::setModels);
     }
 
     private void startChat() {
