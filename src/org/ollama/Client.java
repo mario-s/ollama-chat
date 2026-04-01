@@ -34,22 +34,10 @@ class Client {
         return models;
     }
 
-    String chat(String question) {
-        if (question == null || question.isBlank()) {
-            return "";
+    Chat createChat(String model) {
+        if (model == null || model.isBlank()) {
+            throw new IllegalArgumentException("missing model!");
         }
-
-        String model = "gemma3:latest";
-        OllamaChatRequest builder = OllamaChatRequest.builder().withModel(model);
-
-        OllamaChatRequest requestModel =
-                builder.withMessage(OllamaChatMessageRole.USER, question).build();
-
-        try {
-            OllamaChatResult chatResult = ollama.chat(requestModel, null);
-            return chatResult.getResponseModel().getMessage().getResponse();
-        } catch (OllamaException e) {
-            throw new IllegalStateException(e);
-        }
+        return new Chat(ollama, model);
     }
 }

@@ -13,21 +13,23 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-final class ChatFrame extends JFrame{
+final class Frame extends JFrame{
 
     private final Client client;
     private final ModelList modelList;
-    private final ChatWindow chat;
+    private final ChatPane chatPane;
     private final JTextArea input;
     private final WaitPanel wait;
 
-    ChatFrame() {
+    private Chat chat;
+
+    Frame() {
         super("Ollama");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         client = new Client();
         modelList = new ModelList();
-        chat = new ChatWindow();
+        chatPane = new ChatPane();
         input = new JTextArea();
         wait = new WaitPanel();
 
@@ -43,8 +45,8 @@ final class ChatFrame extends JFrame{
         modelList.setBorder(lowered);
         getContentPane().add(modelList, BorderLayout.PAGE_START);
 
-        chat.setBorder(lowered);
-        getContentPane().add(new JScrollPane(chat), BorderLayout.CENTER);
+        chatPane.setBorder(lowered);
+        getContentPane().add(new JScrollPane(chatPane), BorderLayout.CENTER);
 
         input.setBorder(lowered);
         getContentPane().add(new JScrollPane(input), BorderLayout.PAGE_END);
@@ -73,11 +75,9 @@ final class ChatFrame extends JFrame{
         input.setText("what is the capital of france?");
         invoke(() -> {
             lockUi();
-            String q = retrieveQuestion();
-            chat.addQuestion(q);
-            return client.chat(q);
+            return ask();
         }, a -> {
-            chat.addAnswer(a);
+            chatPane.addAnswer(a);
             unlockUi();
         });
     }
@@ -90,10 +90,23 @@ final class ChatFrame extends JFrame{
         wait.setVisible(false);
     }
 
+    private String ask() {
+        String q = retrieveQuestion();
+        chatPane.addQuestion(q);
+        return getChat().chat(q);
+    }
+
     private String retrieveQuestion() {
         String q = input.getText();
         input.setText("");
         return q;
+    }
+
+    private Chat getChat() {
+        if (chat == null) {
+            chat = client.createChat("gemma3:latest");
+        }
+        return chat;
     }
 
     private <T> void invoke(Supplier<T> supplier, Consumer<T> consumer) {

@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
 public class Main {
     void main() throws Exception {
         SwingUtilities.invokeLater(() -> {
-            ChatFrame f = new ChatFrame();
+            Frame f = new Frame();
             f.display();
         });
     }

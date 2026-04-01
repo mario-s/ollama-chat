@@ -6,13 +6,13 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-final class ChatWindow extends JTextPane{
+final class ChatPane extends JTextPane{
 
     private final StyledDocument doc;
     private final Style questionStyle;
     private final Style answerStyle;
 
-    ChatWindow() {
+    ChatPane() {
         setEditable(false);
 
         doc = getStyledDocument();
