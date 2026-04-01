@@ -1,5 +1,7 @@
 package org.ollama;
 
+import java.awt.Color;
+
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -11,10 +13,10 @@ final class ChatPane extends JTextPane{
     private final StyledDocument doc;
     private final Style questionStyle;
     private final Style answerStyle;
+    private final Style errorStyle;
 
     ChatPane() {
         setEditable(false);
-        setFocusable(false);
 
         doc = getStyledDocument();
 
@@ -23,6 +25,10 @@ final class ChatPane extends JTextPane{
 
         answerStyle = addStyle("AnswerStyle", null);
         StyleConstants.setItalic(answerStyle, true);
+
+        errorStyle = addStyle("ErrorStyle", null);
+        StyleConstants.setForeground(errorStyle, Color.RED);
+        StyleConstants.setBold(errorStyle, true);
     }
 
     void addQuestion(String question) {
@@ -31,6 +37,10 @@ final class ChatPane extends JTextPane{
 
     void addAnswer(String answer) {
         addText(answer, answerStyle);
+    }
+
+    void addError(String error) {
+        addText(error, errorStyle);
     }
 
     void addText(String text, Style style) {

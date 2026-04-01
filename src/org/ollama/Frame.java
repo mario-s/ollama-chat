@@ -3,6 +3,7 @@ package org.ollama;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -149,12 +150,13 @@ final class Frame extends JFrame {
                 LOG.info("canceled task due to timeout");
                 unlockUi();
             }
-        }, 20, TimeUnit.SECONDS);
+        }, 60, TimeUnit.SECONDS);
 
         future.whenComplete((result, ex) -> {
             timeoutTask.cancel(false);
             unlockUi();
             LOG.warn(ex.getMessage());
+            chatPane.addError(Utils.getCause(ex).getMessage());
         });
     }
 }

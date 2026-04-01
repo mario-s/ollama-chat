@@ -42,7 +42,9 @@ final class Chat {
     private OllamaChatRequest buildRequestModel(String question) {
         if (chatResult != null) {
             LOG.trace("using chat history");
-            builder = builder.withMessages(chatResult.getChatHistory());
+            builder = OllamaChatRequest.builder()
+                .withModel(builder.getModel())
+                .withMessages(chatResult.getChatHistory());
         }
 
         return builder.withMessage(OllamaChatMessageRole.USER, question).build();

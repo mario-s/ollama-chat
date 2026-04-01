@@ -1,6 +1,6 @@
 mill-jvm-version: temurin:25
 
-extends: JavaModule
+extends: [JavaModule]
 
 javacOptions: [-deprecation]
 jvmVersion: 25.0.2
