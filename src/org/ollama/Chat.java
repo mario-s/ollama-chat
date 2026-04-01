@@ -7,7 +7,12 @@ import io.github.ollama4j.Ollama;
 import io.github.ollama4j.models.response.Model;
 import io.github.ollama4j.exceptions.OllamaException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 final class Chat {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Chat.class);
 
     private final Ollama ollama;
 
@@ -36,6 +41,7 @@ final class Chat {
 
     private OllamaChatRequest buildRequestModel(String question) {
         if (chatResult != null) {
+            LOG.trace("using chat history");
             builder = builder.withMessages(chatResult.getChatHistory());
         }
 

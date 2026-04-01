@@ -2,22 +2,30 @@ package org.ollama;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-final class Frame extends JFrame implements ActionListener{
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+final class Frame extends JFrame {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Frame.class);
 
     private final Client client;
     private final ModelList modelList;
@@ -36,11 +44,11 @@ final class Frame extends JFrame implements ActionListener{
         modelList = new ModelList();
         chatPane = new ChatPane();
         input = new JTextArea();
-        submit = new JButton("send");
-        submit.addActionListener(this);
         wait = new WaitPanel();
+        submit = new JButton();
 
         buildUi();
+        addActions();
     }
 
     private void buildUi() {
@@ -56,15 +64,36 @@ final class Frame extends JFrame implements ActionListener{
         getContentPane().add(new JScrollPane(chatPane), BorderLayout.CENTER);
 
         input.setBorder(lowered);
-
         JPanel endPanel = new JPanel(new BorderLayout());
         endPanel.add(new JScrollPane(input), BorderLayout.CENTER);
-
         endPanel.add(submit, BorderLayout.LINE_END);
-
         getContentPane().add(endPanel, BorderLayout.PAGE_END);
 
+        submit.setMnemonic(KeyEvent.VK_S);
+
         setGlassPane(wait);
+    }
+
+    private void addActions() {
+        var action = new AbstractAction("send") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                invoke(() -> {
+                    lockUi();
+                    return ask();
+                }, a -> {
+                    LOG.debug("got answer from ollama");
+                    chatPane.addAnswer(a);
+                    unlockUi();
+                });
+            }
+        };
+        submit.setAction(action);
+
+        input.getInputMap(JComponent.WHEN_FOCUSED)
+            .put(KeyStroke.getKeyStroke("control ENTER"), "submit");
+
+        input.getActionMap().put("submit", action);
     }
 
     void display() {
@@ -75,21 +104,10 @@ final class Frame extends JFrame implements ActionListener{
         //starting phrase
         input.setText("what is the capital of france?");
 
-        invoke();
+        loadModels();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        invoke(() -> {
-            lockUi();
-            return ask();
-        }, a -> {
-            chatPane.addAnswer(a);
-            unlockUi();
-        });
-    }
-
-    private void invoke() {
+    private void loadModels() {
         invoke(client::getLocalModels, modelList::setModels);
     }
 
