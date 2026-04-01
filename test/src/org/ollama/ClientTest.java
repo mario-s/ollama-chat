@@ -43,7 +43,7 @@ class ClientTest {
         when(ollama.listModels()).thenReturn(new ArrayList(List.of(m2, m1)));
 
         List<Model> models = classUnderTest.getLocalModels();
-        assertEquals(m1, models.getFirst());
+        assertEquals(models.getFirst(), m1);
     }
 
     @Test
