@@ -14,6 +14,7 @@ final class ChatPane extends JTextPane{
 
     ChatPane() {
         setEditable(false);
+        setFocusable(false);
 
         doc = getStyledDocument();
 

@@ -4,6 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -37,7 +41,7 @@ final class Frame extends JFrame {
     private Chat chat;
 
     Frame() {
-        super("Ollama");
+        super("Ollama Chat");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         client = new Client();
@@ -69,8 +73,6 @@ final class Frame extends JFrame {
         endPanel.add(submit, BorderLayout.LINE_END);
         getContentPane().add(endPanel, BorderLayout.PAGE_END);
 
-        submit.setMnemonic(KeyEvent.VK_S);
-
         setGlassPane(wait);
     }
 
@@ -82,9 +84,9 @@ final class Frame extends JFrame {
                     lockUi();
                     return ask();
                 }, a -> {
-                    LOG.debug("got answer from ollama");
                     chatPane.addAnswer(a);
                     unlockUi();
+                    input.requestFocus();
                 });
             }
         };
@@ -92,7 +94,6 @@ final class Frame extends JFrame {
 
         input.getInputMap(JComponent.WHEN_FOCUSED)
             .put(KeyStroke.getKeyStroke("control ENTER"), "submit");
-
         input.getActionMap().put("submit", action);
     }
 
@@ -136,8 +137,24 @@ final class Frame extends JFrame {
     }
 
     private <T> void invoke(Supplier<T> supplier, Consumer<T> consumer) {
-        CompletableFuture
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        var future = CompletableFuture
             .supplyAsync(supplier::get)
             .thenAccept(consumer);
+
+        ScheduledFuture<?> timeoutTask = scheduler.schedule(() -> {
+            if (!future.isDone()) {
+                future.cancel(true);
+                LOG.info("canceled task due to timeout");
+                unlockUi();
+            }
+        }, 20, TimeUnit.SECONDS);
+
+        future.whenComplete((result, ex) -> {
+            timeoutTask.cancel(false);
+            unlockUi();
+            LOG.warn(ex.getMessage());
+        });
     }
 }
