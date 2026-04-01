@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.swing.JList;
 
-class ModelList extends JList<String> {
+final class ModelList extends JList<String> {
 
     void setModelNames(List<String> names) {
         String [] data = new String[names.size()];

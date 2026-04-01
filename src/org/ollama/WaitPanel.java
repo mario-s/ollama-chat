@@ -5,7 +5,7 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 
-class WaitPanel extends JPanel {
+final class WaitPanel extends JPanel {
 
     WaitPanel() {
         setOpaque(false);

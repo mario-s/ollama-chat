@@ -12,15 +12,15 @@ import io.github.ollama4j.Ollama;
 import io.github.ollama4j.models.response.Model;
 import io.github.ollama4j.exceptions.OllamaException;
 
-class OllamaClient {
+class Client {
 
     private final Ollama ollama;
 
-    OllamaClient() {
+    Client() {
         this(new Ollama());
     }
 
-    OllamaClient(Ollama ollama) {
+    Client(Ollama ollama) {
         this.ollama = ollama;
     }
 

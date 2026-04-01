@@ -8,24 +8,27 @@ import java.util.function.Supplier;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-public class ChatFrame extends JFrame{
+final class ChatFrame extends JFrame{
 
-    private OllamaClient client;
-    private ModelList modelList;
-    private ChatWindow chat;
-    private WaitPanel wait;
+    private final Client client;
+    private final ModelList modelList;
+    private final ChatWindow chat;
+    private final JTextArea input;
+    private final WaitPanel wait;
 
-    public ChatFrame() {
+    ChatFrame() {
         super("Ollama");
-        this.client = new OllamaClient();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        client = new Client();
         modelList = new ModelList();
         chat = new ChatWindow();
+        input = new JTextArea();
         wait = new WaitPanel();
 
         buildUi();
@@ -41,8 +44,10 @@ public class ChatFrame extends JFrame{
         getContentPane().add(modelList, BorderLayout.PAGE_START);
 
         chat.setBorder(lowered);
-        JScrollPane scrollPane = new JScrollPane(chat);
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
+        getContentPane().add(new JScrollPane(chat), BorderLayout.CENTER);
+
+        input.setBorder(lowered);
+        getContentPane().add(new JScrollPane(input), BorderLayout.PAGE_END);
 
         setGlassPane(wait);
     }
@@ -65,13 +70,14 @@ public class ChatFrame extends JFrame{
     }
 
     private void startChat() {
-        chat.setText("what is the capital of france?");
+        input.setText("what is the capital of france?");
         invoke(() -> {
             lockUi();
-            String question = chat.getText();
-            return client.chat(question);
+            String q = retrieveQuestion();
+            chat.addQuestion(q);
+            return client.chat(q);
         }, a -> {
-            chat.appendAnswer(a);
+            chat.addAnswer(a);
             unlockUi();
         });
     }
@@ -82,6 +88,12 @@ public class ChatFrame extends JFrame{
 
     private void unlockUi() {
         wait.setVisible(false);
+    }
+
+    private String retrieveQuestion() {
+        String q = input.getText();
+        input.setText("");
+        return q;
     }
 
     private <T> void invoke(Supplier<T> supplier, Consumer<T> consumer) {
