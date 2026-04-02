@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -81,12 +83,8 @@ final class Frame extends JFrame {
         var action = new AbstractAction("send") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                invoke(() -> {
-                    lockUi();
-                    return ask();
-                }, a -> {
+                invoke(() -> ask(), a -> {
                     chatPane.addAnswer(a);
-                    unlockUi();
                     input.requestFocus();
                 });
             }
@@ -111,11 +109,11 @@ final class Frame extends JFrame {
     }
 
     private void lockUi() {
-        wait.setVisible(true);
+        SwingUtilities.invokeLater(() -> wait.setVisible(true));
     }
 
     private void unlockUi() {
-        wait.setVisible(false);
+        SwingUtilities.invokeLater(() -> wait.setVisible(false));
     }
 
     private String ask() {
@@ -138,25 +136,37 @@ final class Frame extends JFrame {
     }
 
     private <T> void invoke(Supplier<T> supplier, Consumer<T> consumer) {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        SwingWorker<T, Void> worker = new SwingWorker<>() {
 
-        var future = CompletableFuture
-            .supplyAsync(supplier::get)
-            .thenAccept(consumer);
-
-        ScheduledFuture<?> timeoutTask = scheduler.schedule(() -> {
-            if (!future.isDone()) {
-                future.cancel(true);
-                LOG.info("canceled task due to timeout");
-                unlockUi();
+            @Override
+            protected T doInBackground() throws Exception {
+                return supplier.get();
             }
-        }, 60, TimeUnit.SECONDS);
 
-        future.whenComplete((result, ex) -> {
-            timeoutTask.cancel(false);
-            unlockUi();
-            LOG.warn(ex.getMessage());
-            chatPane.addError(Utils.getCause(ex).getMessage());
-        });
+            @Override
+            protected void done() {
+                try {
+                    if (!isCancelled()) {
+                        consumer.accept(get());
+                    }
+                } catch (Exception ex) {
+                    LOG.info(ex.getMessage());
+                    chatPane.addError(Utils.getCause(ex).getMessage());
+                } finally {
+                    unlockUi();
+                }
+            }
+        };
+
+        lockUi();
+        worker.execute();
+        scheduler.schedule(() -> {
+            if (!worker.isDone()) {
+                worker.cancel(true);
+                unlockUi();
+                LOG.info("Task ran into timeout");
+            }
+        }, 30, TimeUnit.SECONDS);
     }
 }
