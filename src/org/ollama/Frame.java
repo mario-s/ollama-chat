@@ -72,15 +72,10 @@ final class Frame extends JFrame {
         cnt.fill = GridBagConstraints.HORIZONTAL;
         cnt.gridx = 0;
         cnt.gridy = 0;
-        cnt.insets = new Insets(0,0, 5,5);
-        getContentPane().add(new JLabel("Local Models:"), cnt);
-
-        cnt.gridwidth = 2;
-        cnt.gridx = 1;
-        cnt.gridy = 0;
-        getContentPane().add(modelList, cnt);
-
         cnt.gridwidth = 3;
+        cnt.insets = new Insets(0,0, 5,0);
+        getContentPane().add(createModelPanel(), cnt);
+
         cnt.gridx = 0;
         cnt.gridy = 1;
         cnt.ipady = 300;
@@ -105,6 +100,27 @@ final class Frame extends JFrame {
         getContentPane().add(submit, cnt);
 
         setGlassPane(wait);
+    }
+
+    private JComponent createModelPanel() {
+        var gridbag = new GridBagLayout();
+        var cnt = new GridBagConstraints();
+        var panel = new JPanel(gridbag);
+        panel.setBorder(BorderFactory.createTitledBorder("Models"));
+
+        cnt.fill = GridBagConstraints.HORIZONTAL;
+        cnt.gridx = 0;
+        cnt.gridy = 0;
+        cnt.weightx = 0.5;
+        cnt.insets = new Insets(0,5,0,5);
+        panel.add(new JLabel("Local:"), cnt);
+
+        cnt.gridx = 1;
+        cnt.gridy = 0;
+        cnt.weightx = 1;
+        panel.add(modelList, cnt);
+
+        return panel;
     }
 
     private void addActions() {
