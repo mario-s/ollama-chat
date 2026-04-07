@@ -1,0 +1,13 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: Test with Mill
+      run: ./mill test
