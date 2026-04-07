@@ -155,14 +155,6 @@ final class Frame extends JFrame {
         invoke(client::getLocalModels, modelList::setModels);
     }
 
-    private void lockUi() {
-        SwingUtilities.invokeLater(() -> wait.setVisible(true));
-    }
-
-    private void unlockUi() {
-        SwingUtilities.invokeLater(() -> wait.setVisible(false));
-    }
-
     private boolean hasNoInput() {
         return input.getText().isBlank();
     }
@@ -205,17 +197,17 @@ final class Frame extends JFrame {
                     LOG.info(ex.getMessage());
                     chatPane.addError(Utils.getCause(ex).getMessage());
                 } finally {
-                    unlockUi();
+                    wait.unlock();
                 }
             }
         };
 
-        lockUi();
+        wait.lock();
         worker.execute();
         scheduler.schedule(() -> {
             if (!worker.isDone()) {
                 worker.cancel(true);
-                unlockUi();
+                wait.unlock();
                 LOG.info("Task ran into timeout");
             }
         }, 30, TimeUnit.SECONDS);
