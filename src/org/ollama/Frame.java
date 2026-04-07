@@ -19,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -69,11 +70,15 @@ final class Frame extends JFrame {
         setLayout(gridbag);
 
         cnt.fill = GridBagConstraints.HORIZONTAL;
-        cnt.gridwidth = 3;
         cnt.gridx = 0;
         cnt.gridy = 0;
+        cnt.insets = new Insets(0,0, 5,5);
+        getContentPane().add(new JLabel("Local Models:"), cnt);
+
+        cnt.gridwidth = 2;
+        cnt.gridx = 1;
+        cnt.gridy = 0;
         getContentPane().add(modelList, cnt);
-        modelList.setBorder(lowered);
 
         cnt.gridwidth = 3;
         cnt.gridx = 0;
