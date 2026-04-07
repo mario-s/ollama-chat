@@ -10,4 +10,4 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Test with Mill
-      run: ./mill test
+      run: ./mill test --testFrameworkArgs "--display-mode=tree"
