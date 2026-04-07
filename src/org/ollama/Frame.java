@@ -106,6 +106,9 @@ final class Frame extends JFrame {
         var action = new AbstractAction("send") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (hasNoInput()) {
+                    return;
+                }
                 invoke(() -> ask(), a -> {
                     chatPane.addAnswer(a);
                     input.requestFocus();
@@ -137,6 +140,10 @@ final class Frame extends JFrame {
 
     private void unlockUi() {
         SwingUtilities.invokeLater(() -> wait.setVisible(false));
+    }
+
+    private boolean hasNoInput() {
+        return input.getText().isBlank();
     }
 
     private String ask() {
