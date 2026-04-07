@@ -1,6 +1,8 @@
 package org.ollama;
 
-import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -59,22 +61,43 @@ final class Frame extends JFrame {
     }
 
     private void buildUi() {
-        getRootPane().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        setLayout(new BorderLayout(5,5));
-
         Border lowered = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+        var gridbag = new GridBagLayout();
+        var cnt = new GridBagConstraints();
 
+        getRootPane().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        setLayout(gridbag);
+
+        cnt.fill = GridBagConstraints.HORIZONTAL;
+        cnt.gridwidth = 3;
+        cnt.gridx = 0;
+        cnt.gridy = 0;
+        getContentPane().add(modelList, cnt);
         modelList.setBorder(lowered);
-        getContentPane().add(modelList, BorderLayout.PAGE_START);
 
+        cnt.gridwidth = 3;
+        cnt.gridx = 0;
+        cnt.gridy = 1;
+        cnt.ipady = 300;
+        cnt.weightx = 0.5;
+
+        getContentPane().add(new JScrollPane(chatPane), cnt);
         chatPane.setBorder(lowered);
-        getContentPane().add(new JScrollPane(chatPane), BorderLayout.CENTER);
 
+        cnt.gridwidth = 3;
+        cnt.gridx = 0;
+        cnt.gridy = 2;
+        cnt.ipady = 100;
+        getContentPane().add(new JScrollPane(input), cnt);
         input.setBorder(lowered);
-        var endPanel = new JPanel(new BorderLayout());
-        endPanel.add(new JScrollPane(input), BorderLayout.CENTER);
-        endPanel.add(submit, BorderLayout.LINE_END);
-        getContentPane().add(endPanel, BorderLayout.PAGE_END);
+
+        cnt.gridwidth = 1;
+        cnt.gridx = 1;
+        cnt.gridy = 3;
+        cnt.ipady = 0;
+        cnt.anchor = GridBagConstraints.PAGE_END;
+        cnt.insets = new Insets(10,50,0,50);
+        getContentPane().add(submit, cnt);
 
         setGlassPane(wait);
     }
