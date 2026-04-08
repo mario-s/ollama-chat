@@ -38,7 +38,7 @@ final class Frame extends JFrame {
     private static final Logger LOG = LoggerFactory.getLogger(Frame.class);
 
     private final Client client;
-    private final ModelList modelList;
+    private final ModelPanel modelPanel;
     private final ChatPane chatPane;
     private final InputArea input;
     private final JButton submit;
@@ -51,7 +51,7 @@ final class Frame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         client = new Client();
-        modelList = new ModelList();
+        modelPanel = new ModelPanel();
         chatPane = new ChatPane();
         input = new InputArea("What is in your mind?");
         wait = new WaitPanel();
@@ -74,7 +74,7 @@ final class Frame extends JFrame {
         cnt.gridy = 0;
         cnt.gridwidth = 3;
         cnt.insets = new Insets(0,0, 5,0);
-        getContentPane().add(new ModelPanel(modelList), cnt);
+        getContentPane().add(modelPanel, cnt);
 
         cnt.gridx = 0;
         cnt.gridy = 1;
@@ -131,7 +131,7 @@ final class Frame extends JFrame {
     }
 
     private void loadModels() {
-        invoke(client::getLocalModels, modelList::setModels);
+        invoke(client::getLocalModels, modelPanel::setLocalModels);
     }
 
     private boolean hasNoInput() {
@@ -152,7 +152,7 @@ final class Frame extends JFrame {
 
     private Chat getChat() {
         if (chat == null) {
-            chat = client.createChat(modelList.getSelectedModelName());
+            chat = client.createChat(modelPanel.getSelectedModelName());
         }
         return chat;
     }
