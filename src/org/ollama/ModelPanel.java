@@ -42,6 +42,6 @@ final class ModelPanel extends JPanel {
     }
 
     String getSelectedModelName() {
-        return localList.getSelectedModelName();
+        return localList.getSelectedModel().map(Model::getName).orElse("");
     }
 }

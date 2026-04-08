@@ -2,12 +2,16 @@ package org.ollama;
 
 import java.awt.Component;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.DefaultListCellRenderer;
 
 import io.github.ollama4j.models.response.Model;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 final class ModelList extends JComboBox<Model> {
 
@@ -19,12 +23,12 @@ final class ModelList extends JComboBox<Model> {
         models.forEach(this::addItem);
     }
 
-    String getSelectedModelName() {
+    Optional<Model> getSelectedModel() {
         Object item = getSelectedItem();
-        if (item instanceof Model model) {
-            return model.getName();
-        }
-        return "";
+        return switch(item) {
+            case Model model -> of(model);
+            default -> empty();
+        };
     }
 
     private static class ModelRenderer extends DefaultListCellRenderer {
