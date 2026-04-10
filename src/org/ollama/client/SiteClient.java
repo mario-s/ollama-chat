@@ -42,7 +42,10 @@ public class SiteClient {
     /**
      * This method returns a collection avialable models, that are hosted on
      * Ollama and can be downloaded. It is not interacting with the Ollama
-     * service running a model.
+     * service running a model.<br/>
+     * Note that it does not load models which do not have a version.
+     * A version comes after a ':' in the name. Some tags do not have this.
+     *
      * @return A collection of available models.
      */
     public List<Model> getRemoteModels() {
@@ -68,6 +71,17 @@ public class SiteClient {
             throw new IllegalStateException(e);
         }
 
-        return models;
+        return removeMissingVersions(models);
+    }
+
+    /**
+     * Filters out those models, which do not have a versionnummer in name.
+     * @param models
+     * @return Collection without elments that do't have a version
+     */
+    private List<Model> removeMissingVersions(List<Model> models) {
+        return models.stream()
+        .filter(m -> m.getName().contains(":"))
+        .toList();
     }
 }
