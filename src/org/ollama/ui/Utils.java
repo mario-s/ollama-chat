@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.ui;
 
 final class Utils {
 

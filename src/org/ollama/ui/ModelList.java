@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.ui;
 
 import java.awt.Component;
 import java.util.List;
@@ -37,13 +37,14 @@ final class ModelList extends JComboBox<Model> {
                 JList<?> list, Object value, int index,
                 boolean isSelected, boolean hasFocus) {
 
-            super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
+            String name = switch(value) {
+                case null -> "";
+                case Model model -> model.getName();
+                default -> value.toString();
+            };
 
-            if (value instanceof Model model) {
-                setText(model.getName());
-            }
-
-            return this;
+            return super.getListCellRendererComponent(list, name, index, isSelected, hasFocus);
         }
     }
+
 }

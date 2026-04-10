@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.client;
 
 import io.github.ollama4j.Ollama;
 import io.github.ollama4j.models.chat.OllamaChatMessageRole;

@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.client;
 
 import io.github.ollama4j.models.chat.OllamaChatMessageRole;
 import io.github.ollama4j.models.chat.OllamaChatRequest;
@@ -10,7 +10,7 @@ import io.github.ollama4j.exceptions.OllamaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class Chat {
+public final class Chat {
 
     private static final Logger LOG = LoggerFactory.getLogger(Chat.class);
 
@@ -24,7 +24,7 @@ final class Chat {
         builder = OllamaChatRequest.builder().withModel(model);
     }
 
-    String chat(String question) {
+    public String chat(String question) {
         if (question == null || question.isBlank()) {
             return "";
         }

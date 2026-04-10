@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.ui;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -14,10 +14,13 @@ import io.github.ollama4j.models.response.Model;
 
 final class ModelPanel extends JPanel {
 
+    private final ModelList remoteList;
     private final ModelList localList;
 
     ModelPanel() {
+        this.remoteList = new ModelList();
         this.localList = new ModelList();
+
         setBorder(BorderFactory.createTitledBorder("Models"));
 
         var gridbag = new GridBagLayout();
@@ -25,16 +28,32 @@ final class ModelPanel extends JPanel {
         setLayout(gridbag);
 
         cnt.fill = GridBagConstraints.HORIZONTAL;
+
         cnt.gridx = 0;
         cnt.gridy = 0;
+        cnt.weightx = 0.5;
+        cnt.insets = new Insets(0,5,0,5);
+        add(new JLabel("Remote:"), cnt);
+
+        cnt.gridx = 1;
+        cnt.gridy = 0;
+        cnt.weightx = 1;
+        add(remoteList, cnt);
+
+        cnt.gridx = 0;
+        cnt.gridy = 1;
         cnt.weightx = 0.5;
         cnt.insets = new Insets(0,5,0,5);
         add(new JLabel("Local:"), cnt);
 
         cnt.gridx = 1;
-        cnt.gridy = 0;
+        cnt.gridy = 1;
         cnt.weightx = 1;
         add(localList, cnt);
+    }
+
+    void setRemoteModels(List<Model> models) {
+        this.remoteList.setModels(models);
     }
 
     void setLocalModels(List<Model> models) {

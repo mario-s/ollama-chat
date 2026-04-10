@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.client;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -19,16 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClientTest {
+class ApiClientTest {
 
     @Mock
     private Ollama ollama;
 
-    private Client classUnderTest;
+    private ApiClient classUnderTest;
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new Client(ollama);
+        classUnderTest = new ApiClient(ollama);
     }
 
     @Test

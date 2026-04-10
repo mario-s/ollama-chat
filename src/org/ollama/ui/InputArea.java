@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.ui;
 
 import java.awt.Color;
 import java.awt.Font;

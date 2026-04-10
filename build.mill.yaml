@@ -8,4 +8,6 @@ jvmVersion: 25.0.2
 mainClass: org.ollama.Main
 mvnDeps:
 - io.github.ollama4j:ollama4j:1.1.6
+- com.fasterxml.jackson.core:jackson-databind:2.21.2
+- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.2
 - org.slf4j:slf4j-simple:2.0.13

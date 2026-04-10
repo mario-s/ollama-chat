@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.ui;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -30,14 +30,18 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
+import org.ollama.client.ApiClient;
+import org.ollama.client.Chat;
+import org.ollama.client.SiteClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class Frame extends JFrame {
+public final class Frame extends JFrame {
 
     private static final Logger LOG = LoggerFactory.getLogger(Frame.class);
 
-    private final Client client;
+    private final ApiClient apiClient;
+    private final SiteClient siteClient;
     private final ModelPanel modelPanel;
     private final ChatPane chatPane;
     private final InputArea input;
@@ -46,11 +50,12 @@ final class Frame extends JFrame {
 
     private Chat chat;
 
-    Frame() {
+    public Frame() {
         super("Ollama Chat");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        client = new Client();
+        apiClient = new ApiClient();
+        siteClient = new SiteClient();
         modelPanel = new ModelPanel();
         chatPane = new ChatPane();
         input = new InputArea("What is in your mind?");
@@ -122,7 +127,7 @@ final class Frame extends JFrame {
         input.getActionMap().put("submit", action);
     }
 
-    void display() {
+    public void display() {
         setSize(400, 600);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -131,7 +136,8 @@ final class Frame extends JFrame {
     }
 
     private void loadModels() {
-        invoke(client::getLocalModels, modelPanel::setLocalModels);
+        invoke(siteClient::getRemoteModels, modelPanel::setRemoteModels);
+        invoke(apiClient::getLocalModels, modelPanel::setLocalModels);
     }
 
     private boolean hasNoInput() {
@@ -152,7 +158,7 @@ final class Frame extends JFrame {
 
     private Chat getChat() {
         if (chat == null) {
-            chat = client.createChat(modelPanel.getSelectedModelName());
+            chat = apiClient.createChat(modelPanel.getSelectedModelName());
         }
         return chat;
     }
@@ -173,7 +179,7 @@ final class Frame extends JFrame {
                         consumer.accept(get());
                     }
                 } catch (Exception ex) {
-                    LOG.info(ex.getMessage());
+                    LOG.warn(ex.getMessage(), ex);
                     chatPane.addError(Utils.getCause(ex).getMessage());
                 } finally {
                     wait.unlock();
@@ -189,6 +195,6 @@ final class Frame extends JFrame {
                 wait.unlock();
                 LOG.info("Task ran into timeout");
             }
-        }, 30, TimeUnit.SECONDS);
+        }, 60, TimeUnit.SECONDS);
     }
 }

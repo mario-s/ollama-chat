@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.client;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,15 +13,15 @@ import io.github.ollama4j.Ollama;
 import io.github.ollama4j.models.response.Model;
 import io.github.ollama4j.exceptions.OllamaException;
 
-class Client {
+public class ApiClient {
 
     private final Ollama ollama;
 
-    Client() {
+    public ApiClient() {
         this(new Ollama());
     }
 
-    Client(Ollama ollama) {
+    public ApiClient(Ollama ollama) {
         this.ollama = ollama;
     }
 
@@ -29,7 +29,7 @@ class Client {
      * Get the local available models in an alphabetic sorted order.
      * @return a collection of local models
      */
-    List<Model> getLocalModels() {
+    public List<Model> getLocalModels() {
         List<Model> models = Collections.emptyList();
         try {
             models = this.ollama.listModels();
@@ -44,7 +44,7 @@ class Client {
         return models;
     }
 
-    Chat createChat(String model) {
+    public Chat createChat(String model) {
         if (model == null || model.isBlank()) {
             throw new IllegalArgumentException("missing model!");
         }

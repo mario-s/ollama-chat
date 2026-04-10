@@ -1,4 +1,4 @@
-package org.ollama;
+package org.ollama.ui;
 
 import java.awt.Color;
 
@@ -44,6 +44,9 @@ final class ChatPane extends JTextPane{
     }
 
     void addText(String text, Style style) {
+        if (text == null || text.isBlank()) {
+            return;
+        }
         var txt = String.format("%s\r\n\r\n", text);
         try {
             doc.insertString(doc.getLength(), txt, style);
