@@ -128,7 +128,7 @@ public final class Frame extends JFrame {
     }
 
     public void display() {
-        setSize(400, 600);
+        setSize(600, 620);
         setLocationRelativeTo(null);
         setVisible(true);
 
