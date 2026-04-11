@@ -19,6 +19,8 @@ final class ModelPanel extends JPanel {
 
     ModelPanel() {
         this.remoteList = new ModelList();
+        this.remoteList.setEditable(true);
+
         this.localList = new ModelList();
 
         setBorder(BorderFactory.createTitledBorder("Models"));

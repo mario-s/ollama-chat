@@ -1,11 +1,15 @@
 package org.ollama.ui;
 
 import java.awt.Component;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JTextField;
+import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultListCellRenderer;
 
 import io.github.ollama4j.models.response.Model;
@@ -17,6 +21,7 @@ final class ModelList extends JComboBox<Model> {
 
     public ModelList() {
         setRenderer(new ModelRenderer());
+        setEditor(new ModelEditor());
     }
 
     void setModels(List<Model> models) {
@@ -47,4 +52,44 @@ final class ModelList extends JComboBox<Model> {
         }
     }
 
+    private static class ModelEditor implements ComboBoxEditor  {
+
+        private JTextField editor;
+
+        ModelEditor() {
+            this.editor = new JTextField();
+        }
+
+        @Override
+        public Component getEditorComponent() {
+            return editor;
+        }
+
+        @Override
+        public void setItem(Object value) {
+            if (value instanceof Model m) {
+                editor.setText(m.getName());
+            }
+        }
+
+        @Override
+        public Object getItem() {
+            return editor.getText();
+        }
+
+        @Override
+        public void selectAll() {
+            editor.selectAll();
+        }
+
+        @Override
+        public void addActionListener(ActionListener l) {
+            editor.addActionListener(l);
+        }
+
+        @Override
+        public void removeActionListener(ActionListener l) {
+            editor.removeActionListener(l);
+        }
+    }
 }
