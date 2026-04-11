@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,10 +17,13 @@ final class ModelPanel extends JPanel {
 
     private final ModelList remoteList;
     private final ModelList localList;
+    private final JButton btnPull;
 
     ModelPanel() {
         this.remoteList = new ModelList();
         this.remoteList.setEditable(true);
+        this.btnPull = new JButton("⬇️");
+        btnPull.setToolTipText("downloads the selected remote model");
 
         this.localList = new ModelList();
 
@@ -41,6 +45,11 @@ final class ModelPanel extends JPanel {
         cnt.gridy = 0;
         cnt.weightx = 1;
         add(remoteList, cnt);
+
+        cnt.gridx = 2;
+        cnt.gridy = 0;
+        cnt.weightx = 0.1;
+        add(btnPull, cnt);
 
         cnt.gridx = 0;
         cnt.gridy = 1;
