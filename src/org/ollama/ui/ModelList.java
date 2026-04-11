@@ -20,15 +20,10 @@ import javax.swing.DefaultListCellRenderer;
 
 import io.github.ollama4j.models.response.Model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 final class ModelList extends JComboBox<Model> implements FocusListener {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ModelList.class);
 
     private final ModelEditor editor;
 
