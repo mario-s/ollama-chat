@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -126,6 +127,23 @@ public final class Frame extends JFrame {
             .put(KeyStroke.getKeyStroke("control ENTER"), "submit");
         input.getActionMap().put("submit", action);
 
+        SwingWorker<Object, Void> worker = new SwingWorker<>() {
+
+            @Override
+            protected Object doInBackground() throws Exception {
+                try {
+                    apiClient.pullModel(modelPanel.getSelectedRemoteModel());
+                } catch (IOException ex) {
+                    LOG.warn(ex.getMessage(), ex);
+                    showErrorInChat(ex);
+                }
+                return new Object();
+            }
+
+        };
+        modelPanel.addPullActionListener(e -> {
+            worker.execute();
+        });
         modelPanel.addRefreshActionListener(e -> loadLocalModels());
     }
 
@@ -169,6 +187,10 @@ public final class Frame extends JFrame {
         return chat;
     }
 
+    private void showErrorInChat(Throwable ex) {
+        chatPane.addError(Utils.getCause(ex).getMessage());
+    }
+
     private <T> void invoke(Supplier<T> supplier, Consumer<T> consumer) {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         SwingWorker<T, Void> worker = new SwingWorker<>() {
@@ -186,7 +208,7 @@ public final class Frame extends JFrame {
                     }
                 } catch (Exception ex) {
                     LOG.warn(ex.getMessage(), ex);
-                    chatPane.addError(Utils.getCause(ex).getMessage());
+                    showErrorInChat(ex);
                 } finally {
                     wait.unlock();
                 }

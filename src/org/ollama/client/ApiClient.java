@@ -1,5 +1,6 @@
 package org.ollama.client;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +14,12 @@ import io.github.ollama4j.Ollama;
 import io.github.ollama4j.models.response.Model;
 import io.github.ollama4j.exceptions.OllamaException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ApiClient {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ApiClient.class);
 
     private final Ollama ollama;
 
@@ -21,8 +27,17 @@ public class ApiClient {
         this(new Ollama());
     }
 
-    public ApiClient(Ollama ollama) {
+    ApiClient(Ollama ollama) {
         this.ollama = ollama;
+    }
+
+    public void pullModel(String name) throws IOException {
+        LOG.info("pulling model {}", name);
+        try {
+            ollama.pullModel(name);
+        } catch (OllamaException e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -32,7 +47,7 @@ public class ApiClient {
     public List<Model> getLocalModels() {
         List<Model> models = Collections.emptyList();
         try {
-            models = this.ollama.listModels();
+            models = ollama.listModels();
 
             models.sort(Comparator.comparing(
                 Model::getName,

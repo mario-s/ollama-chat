@@ -14,10 +14,15 @@ import javax.swing.DefaultListCellRenderer;
 
 import io.github.ollama4j.models.response.Model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 final class ModelList extends JComboBox<Model> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ModelList.class);
 
     public ModelList() {
         setRenderer(new ModelRenderer());
@@ -31,6 +36,7 @@ final class ModelList extends JComboBox<Model> {
 
     Optional<Model> getSelectedModel() {
         Object item = getSelectedItem();
+        LOG.debug("selected item: {}", item);
         return switch(item) {
             case Model model -> of(model);
             default -> empty();
@@ -55,6 +61,7 @@ final class ModelList extends JComboBox<Model> {
 
     private static class ModelEditor implements ComboBoxEditor  {
 
+        private Model model;
         private JTextField editor;
 
         ModelEditor() {
@@ -70,12 +77,13 @@ final class ModelList extends JComboBox<Model> {
         public void setItem(Object value) {
             if (value instanceof Model m) {
                 editor.setText(m.getName());
+                this.model = model;
             }
         }
 
         @Override
         public Object getItem() {
-            return editor.getText();
+            return this.model;
         }
 
         @Override
