@@ -141,9 +141,7 @@ public final class Frame extends JFrame {
             }
 
         };
-        modelPanel.addPullActionListener(e -> {
-            worker.execute();
-        });
+        modelPanel.addPullActionListener(e -> worker.execute());
         modelPanel.addRefreshActionListener(e -> loadLocalModels());
     }
 
