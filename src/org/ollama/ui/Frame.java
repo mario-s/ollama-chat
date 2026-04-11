@@ -132,7 +132,8 @@ public final class Frame extends JFrame {
             @Override
             protected Object doInBackground() throws Exception {
                 try {
-                    apiClient.pullModel(modelPanel.getSelectedRemoteModel());
+                    String name = modelPanel.getSelectedRemoteModel();
+                    apiClient.pullModel(name);
                 } catch (IOException ex) {
                     LOG.warn(ex.getMessage(), ex);
                     showErrorInChat(ex);
