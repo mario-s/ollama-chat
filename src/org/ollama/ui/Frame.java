@@ -127,22 +127,23 @@ public final class Frame extends JFrame {
             .put(KeyStroke.getKeyStroke("control ENTER"), "submit");
         input.getActionMap().put("submit", action);
 
-        SwingWorker<Object, Void> worker = new SwingWorker<>() {
+        modelPanel.addPullActionListener(e -> {
+            SwingWorker<Object, Void> worker = new SwingWorker<>() {
 
-            @Override
-            protected Object doInBackground() throws Exception {
-                try {
-                    String name = modelPanel.getSelectedRemoteModel();
-                    apiClient.pullModel(name);
-                } catch (IOException ex) {
-                    LOG.warn(ex.getMessage(), ex);
-                    showErrorInChat(ex);
+                @Override
+                protected Object doInBackground() throws Exception {
+                    try {
+                        apiClient.pullModel(modelPanel.getSelectedRemoteModel());
+                    } catch (IOException ex) {
+                        LOG.warn(ex.getMessage(), ex);
+                        showErrorInChat(ex);
+                    }
+                    return new Object();
                 }
-                return new Object();
-            }
 
-        };
-        modelPanel.addPullActionListener(e -> worker.execute());
+            };
+            worker.execute();
+        });
         modelPanel.addRefreshActionListener(e -> loadLocalModels());
     }
 
