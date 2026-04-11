@@ -96,7 +96,6 @@ public final class Frame extends JFrame {
         getContentPane().add(new JScrollPane(input), cnt);
         input.setBorder(lowered);
 
-        cnt.gridwidth = 1;
         cnt.gridx = 1;
         cnt.gridy = 3;
         cnt.ipady = 0;
@@ -108,7 +107,7 @@ public final class Frame extends JFrame {
     }
 
     private void addActions() {
-        var action = new AbstractAction("send") {
+        var action = new AbstractAction("▶️") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (hasNoInput()) {
@@ -121,6 +120,7 @@ public final class Frame extends JFrame {
             }
         };
         submit.setAction(action);
+        submit.setToolTipText("sends input to the local model");
 
         input.getInputMap(JComponent.WHEN_FOCUSED)
             .put(KeyStroke.getKeyStroke("control ENTER"), "submit");
