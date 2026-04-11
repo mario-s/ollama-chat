@@ -188,7 +188,7 @@ public final class Frame extends JFrame {
     }
 
     private void showErrorInChat(Throwable ex) {
-        chatPane.addError(Utils.getCause(ex).getMessage());
+        chatPane.addError(ExceptionUtil.getCause(ex).getMessage());
     }
 
     private <T> void invoke(Supplier<T> supplier, Consumer<T> consumer) {
