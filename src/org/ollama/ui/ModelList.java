@@ -25,6 +25,7 @@ final class ModelList extends JComboBox<Model> {
     }
 
     void setModels(List<Model> models) {
+        removeAllItems();
         models.forEach(this::addItem);
     }
 

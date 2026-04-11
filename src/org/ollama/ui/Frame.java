@@ -125,6 +125,8 @@ public final class Frame extends JFrame {
         input.getInputMap(JComponent.WHEN_FOCUSED)
             .put(KeyStroke.getKeyStroke("control ENTER"), "submit");
         input.getActionMap().put("submit", action);
+
+        modelPanel.addRefreshActionListener(e -> loadLocalModels());
     }
 
     public void display() {
@@ -137,6 +139,10 @@ public final class Frame extends JFrame {
 
     private void loadModels() {
         invoke(siteClient::getRemoteModels, modelPanel::setRemoteModels);
+        loadLocalModels();
+    }
+
+    private void loadLocalModels() {
         invoke(apiClient::getLocalModels, modelPanel::setLocalModels);
     }
 
@@ -158,7 +164,7 @@ public final class Frame extends JFrame {
 
     private Chat getChat() {
         if (chat == null) {
-            chat = apiClient.createChat(modelPanel.getSelectedModelName());
+            chat = apiClient.createChat(modelPanel.getSelectedLocalModel());
         }
         return chat;
     }

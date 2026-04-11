@@ -3,6 +3,7 @@ package org.ollama.ui;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -18,12 +19,16 @@ final class ModelPanel extends JPanel {
     private final ModelList remoteList;
     private final ModelList localList;
     private final JButton btnPull;
+    private final JButton btnReload;
 
     ModelPanel() {
         this.remoteList = new ModelList();
         this.remoteList.setEditable(true);
         this.btnPull = new JButton("⬇️");
+        this.btnReload = new JButton("🔄");
+
         btnPull.setToolTipText("downloads the selected remote model");
+        btnReload.setToolTipText("refreshes the list of local models");
 
         this.localList = new ModelList();
 
@@ -61,6 +66,19 @@ final class ModelPanel extends JPanel {
         cnt.gridy = 1;
         cnt.weightx = 1;
         add(localList, cnt);
+
+        cnt.gridx = 2;
+        cnt.gridy = 1;
+        cnt.weightx = 0.1;
+        add(btnReload, cnt);
+    }
+
+    void addPullActionListener(ActionListener l) {
+        btnPull.addActionListener(l);
+    }
+
+    void addRefreshActionListener(ActionListener l) {
+        btnReload.addActionListener(l);
     }
 
     void setRemoteModels(List<Model> models) {
@@ -71,7 +89,11 @@ final class ModelPanel extends JPanel {
         this.localList.setModels(models);
     }
 
-    String getSelectedModelName() {
+    String getSelectedLocalModel() {
         return localList.getSelectedModel().map(Model::getName).orElse("");
+    }
+
+    String getSelectedRemoteModel() {
+        return remoteList.getSelectedModel().map(Model::getName).orElse("");
     }
 }
