@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @ExtendWith(MockitoExtension.class)
-class ApiFacadeTest {
+class ClientFacadeTest {
     private static final String NAME = "foo";
 
     @Mock
@@ -29,11 +29,11 @@ class ApiFacadeTest {
     @Mock
     private SiteClient siteClient;
 
-    private ApiFacade classUnderTest;
+    private ClientFacade classUnderTest;
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new ApiFacade(frame, apiClient, siteClient);
+        classUnderTest = new ClientFacade(frame, apiClient, siteClient);
     }
 
     @Test

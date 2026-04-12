@@ -40,7 +40,7 @@ public final class Frame extends JFrame {
     private final InputArea input;
     private final JButton submit;
     private final WaitPanel wait;
-    private final ApiFacade facade;
+    private final ClientFacade facade;
 
     private Chat chat;
 
@@ -53,7 +53,7 @@ public final class Frame extends JFrame {
         input = new InputArea("What is in your mind?");
         submit = new JButton();
         wait = new WaitPanel();
-        facade = new ApiFacade(this);
+        facade = new ClientFacade(this);
 
         buildUi();
         addActions();

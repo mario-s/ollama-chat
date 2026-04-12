@@ -8,6 +8,9 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import javax.swing.JTextArea;
 
+/**
+ * The component for user's input.
+ */
 final class InputArea extends JTextArea {
     private final String placeholder;
 

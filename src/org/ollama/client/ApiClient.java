@@ -17,6 +17,9 @@ import io.github.ollama4j.exceptions.OllamaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The client to interact with a (local) Ollama server.
+ */
 public class ApiClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApiClient.class);

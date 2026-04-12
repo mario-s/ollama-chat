@@ -23,6 +23,9 @@ import io.github.ollama4j.models.response.Model;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
+/**
+ * This component show the list of available models.
+ */
 final class ModelList extends JComboBox<Model> implements FocusListener {
 
     private final ModelEditor editor;

@@ -18,19 +18,22 @@ import org.ollama.client.SiteClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class ApiFacade {
+/**
+ * THis facade is the bridge between the ui and client package.
+ */
+final class ClientFacade {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ApiFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClientFacade.class);
 
     private final Frame frame;
     private final ApiClient apiClient;
     private final SiteClient siteClient;
 
-    ApiFacade(Frame frame){
+    ClientFacade(Frame frame){
         this(frame, new ApiClient(), new SiteClient());
     }
 
-    ApiFacade(Frame frame, ApiClient apiClient, SiteClient siteClient) {
+    ClientFacade(Frame frame, ApiClient apiClient, SiteClient siteClient) {
         this.frame = frame;
         this.apiClient = apiClient;
         this.siteClient = siteClient;

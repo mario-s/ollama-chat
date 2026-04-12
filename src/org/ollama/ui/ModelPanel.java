@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 
 import io.github.ollama4j.models.response.Model;
 
+/**
+ * THe panel to deal with models.
+ */
 final class ModelPanel extends JPanel {
 
     private final ModelList remoteList;

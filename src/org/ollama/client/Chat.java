@@ -10,6 +10,9 @@ import io.github.ollama4j.exceptions.OllamaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class holds the user's conversation with the model.
+ */
 public final class Chat {
 
     private static final Logger LOG = LoggerFactory.getLogger(Chat.class);

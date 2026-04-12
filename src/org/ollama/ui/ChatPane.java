@@ -8,6 +8,9 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+/**
+ * The component which displays the chat.
+ */
 final class ChatPane extends JTextPane{
 
     private final StyledDocument doc;
