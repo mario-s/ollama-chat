@@ -14,6 +14,8 @@ import io.github.ollama4j.models.response.Model;
 
 import org.ollama.client.ApiClient;
 import org.ollama.client.Chat;
+import org.ollama.client.Config;
+import org.ollama.client.ConfigLoader;
 import org.ollama.client.SiteClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +32,8 @@ final class ClientFacade {
     private final SiteClient siteClient;
 
     ClientFacade(Frame frame){
-        this(frame, new ApiClient(), new SiteClient());
+        Config config = new ConfigLoader().load();
+        this(frame, new ApiClient(config), new SiteClient(config));
     }
 
     ClientFacade(Frame frame, ApiClient apiClient, SiteClient siteClient) {
@@ -88,8 +91,8 @@ final class ClientFacade {
                         consumer.accept(get());
                     }
                 } catch (Exception ex) {
-                    LOG.warn(ex.getMessage(), ex);
                     frame.showError(ex);
+                    LOG.error(ex.getMessage(), ex);
                 } finally {
                     frame.lock(false);
                 }

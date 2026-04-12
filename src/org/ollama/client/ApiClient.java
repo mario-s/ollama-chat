@@ -26,8 +26,9 @@ public class ApiClient {
 
     private final Ollama ollama;
 
-    public ApiClient() {
-        this(new Ollama());
+    public ApiClient(Config config) {
+        var o = new Ollama(config.api());
+        this(o);
     }
 
     ApiClient(Ollama ollama) {

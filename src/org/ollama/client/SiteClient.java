@@ -25,13 +25,11 @@ public class SiteClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(SiteClient.class);
 
-    private static final String OLLAMA_TAGS = "https://ollama.com/api/tags";
-
     private final String tagsUrl;
     private final HttpClient client;
 
-    public SiteClient() {
-        this(OLLAMA_TAGS);
+    public SiteClient(Config config) {
+        this(config.tags());
     }
 
     public SiteClient(String tagsUrl) {

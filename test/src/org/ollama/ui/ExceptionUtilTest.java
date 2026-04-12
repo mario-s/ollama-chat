@@ -8,6 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ExceptionUtilTest {
 
     @Test
+    @DisplayName("It should return the class name if the cause has no message")
+    void getCauseMessage() {
+        var ex = new RuntimeException();
+
+        String result = ExceptionUtil.getCauseMessage(ex);
+        assertEquals(ex.getClass().getName(), result);
+    }
+
+    @Test
     @DisplayName("It should return the same exception if there is no other cause.")
     void getCause() {
         var ex = new RuntimeException("test");
