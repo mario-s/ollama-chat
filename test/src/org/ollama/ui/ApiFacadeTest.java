@@ -14,6 +14,7 @@ import org.ollama.client.SiteClient;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @ExtendWith(MockitoExtension.class)
 class ApiFacadeTest {
@@ -41,5 +42,13 @@ class ApiFacadeTest {
         classUnderTest.createChat(NAME);
 
         verify(apiClient).createChat(NAME);
+    }
+
+    @Test
+    @DisplayName("It should use the ApiClient to pull a model")
+    void pullModelSync() throws Exception {
+        classUnderTest.pullModelSync(NAME);
+
+        verify(apiClient).pullModel(NAME);
     }
 }

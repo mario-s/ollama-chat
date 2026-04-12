@@ -16,10 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ApiClientTest {
+    private static final String NAME = "foo";
 
     @Mock
     private Ollama ollama;
@@ -29,6 +31,14 @@ class ApiClientTest {
     @BeforeEach
     void setUp() {
         classUnderTest = new ApiClient(ollama);
+    }
+
+    @Test
+    @DisplayName("It should allow to pull a model")
+    void pullModel() throws Exception {
+        classUnderTest.pullModel(NAME);
+
+        verify(ollama).pullModel(NAME);
     }
 
     @Test

@@ -46,7 +46,7 @@ final class ApiFacade {
             @Override
             protected Object doInBackground() throws Exception {
                 try {
-                    apiClient.pullModel(name);
+                    pullModelSync(name);
                 } catch (Exception ex) {
                     LOG.warn(ex.getMessage(), ex);
                     frame.showError(ex);
@@ -55,6 +55,10 @@ final class ApiFacade {
             }
         };
         worker.execute();
+    }
+
+    void pullModelSync(String name) throws IOException {
+        apiClient.pullModel(name);
     }
 
     void loadRemoteModels(Consumer<List<Model>> consumer) {

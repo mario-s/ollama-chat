@@ -36,7 +36,8 @@ public class ApiClient {
         try {
             ollama.pullModel(name);
         } catch (OllamaException e) {
-            throw new IOException(e);
+            String msg = String.format("%s for %s", e.getMessage(), name);
+            throw new IOException(msg);
         }
     }
 

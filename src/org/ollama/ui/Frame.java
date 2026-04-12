@@ -168,6 +168,6 @@ public final class Frame extends JFrame {
     }
 
     void showError(Throwable ex) {
-        chatPane.addError(ExceptionUtil.getCause(ex).getMessage());
+        SwingUtilities.invokeLater(() -> chatPane.addError(ExceptionUtil.getCause(ex).getMessage()));
     }
 }
