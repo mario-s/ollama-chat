@@ -1,6 +1,7 @@
 package org.ollama.ui;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -9,17 +10,31 @@ import java.util.function.Supplier;
 
 import javax.swing.SwingWorker;
 
+import io.github.ollama4j.models.response.Model;
+
+import org.ollama.client.ApiClient;
+import org.ollama.client.Chat;
+import org.ollama.client.SiteClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class Worker {
+final class ApiFacade {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Worker.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApiFacade.class);
 
     private final Frame frame;
+    private final ApiClient apiClient;
+    private final SiteClient siteClient;
 
-    Worker(Frame frame){
+    ApiFacade(Frame frame){
         this.frame = frame;
+
+        apiClient = new ApiClient();
+        siteClient = new SiteClient();
+    }
+
+    Chat createChat(String model) {
+        return apiClient.createChat(model);
     }
 
     void pullModel(String name) {
@@ -28,7 +43,7 @@ final class Worker {
             @Override
             protected Object doInBackground() throws Exception {
                 try {
-                    frame.getApiClient().pullModel(name);
+                    apiClient.pullModel(name);
                 } catch (Exception ex) {
                     LOG.warn(ex.getMessage(), ex);
                     frame.showErrorInChat(ex);
@@ -39,7 +54,15 @@ final class Worker {
         worker.execute();
     }
 
-    <T> void execute(Supplier<T> supplier, Consumer<T> consumer) {
+    void loadRemoteModels(Consumer<List<Model>> consumer) {
+        execute(siteClient::getRemoteModels, l -> consumer.accept(l));
+    }
+
+    void loadLocalModels(Consumer<List<Model>> consumer) {
+        execute(apiClient::getLocalModels, l -> consumer.accept(l));
+    }
+
+    private <T> void execute(Supplier<T> supplier, Consumer<T> consumer) {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         SwingWorker<T, Void> worker = new SwingWorker<>() {
 

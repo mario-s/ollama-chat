@@ -35,14 +35,12 @@ public final class Frame extends JFrame {
 
     private static final Logger LOG = LoggerFactory.getLogger(Frame.class);
 
-    private final ApiClient apiClient;
-    private final SiteClient siteClient;
     private final ModelPanel modelPanel;
     private final ChatPane chatPane;
     private final InputArea input;
     private final JButton submit;
     private final WaitPanel wait;
-    private final Worker worker;
+    private final ApiFacade facade;
 
     private Chat chat;
 
@@ -50,14 +48,12 @@ public final class Frame extends JFrame {
         super("Ollama Chat");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        apiClient = new ApiClient();
-        siteClient = new SiteClient();
         modelPanel = new ModelPanel();
         chatPane = new ChatPane();
         input = new InputArea("What is in your mind?");
         submit = new JButton();
         wait = new WaitPanel();
-        worker = new Worker(this);
+        facade = new ApiFacade(this);
 
         buildUi();
         addActions();
@@ -110,7 +106,7 @@ public final class Frame extends JFrame {
                 if (hasNoInput()) {
                     return;
                 }
-                worker.execute(() -> ask(), a -> {
+                facade.execute(() -> ask(), a -> {
                     chatPane.addAnswer(a);
                     input.requestFocus();
                 });
@@ -123,7 +119,7 @@ public final class Frame extends JFrame {
             .put(KeyStroke.getKeyStroke("control ENTER"), "submit");
         input.getActionMap().put("submit", action);
 
-        modelPanel.addPullActionListener(e -> worker.pullModel(modelPanel.getSelectedRemoteModel()));
+        modelPanel.addPullActionListener(e -> facade.pullModel(modelPanel.getSelectedRemoteModel()));
         modelPanel.addRefreshActionListener(e -> loadLocalModels());
     }
 
@@ -140,12 +136,12 @@ public final class Frame extends JFrame {
     }
 
     private void loadModels() {
-        worker.execute(siteClient::getRemoteModels, modelPanel::setRemoteModels);
+        facade.loadRemoteModels(modelPanel::setRemoteModels);
         loadLocalModels();
     }
 
     private void loadLocalModels() {
-        worker.execute(apiClient::getLocalModels, modelPanel::setLocalModels);
+        facade.loadLocalModels(modelPanel::setLocalModels);
     }
 
     private boolean hasNoInput() {
@@ -166,16 +162,12 @@ public final class Frame extends JFrame {
 
     private Chat getChat() {
         if (chat == null) {
-            chat = apiClient.createChat(modelPanel.getSelectedLocalModel());
+            chat = facade.createChat(modelPanel.getSelectedLocalModel());
         }
         return chat;
     }
 
     void showErrorInChat(Throwable ex) {
         chatPane.addError(ExceptionUtil.getCause(ex).getMessage());
-    }
-
-    ApiClient getApiClient() {
-        return apiClient;
     }
 }
