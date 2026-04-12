@@ -12,7 +12,7 @@ class ExceptionUtilTest {
     void getCause() {
         var ex = new RuntimeException("test");
 
-        Throwable result = Utils.getCause(ex);
+        Throwable result = ExceptionUtil.getCause(ex);
         assertEquals(ex, result);
     }
 
@@ -22,7 +22,7 @@ class ExceptionUtilTest {
         var first = new RuntimeException("test");
         var ex = new RuntimeException(first);
 
-        Throwable result = Utils.getCause(ex);
+        Throwable result = ExceptionUtil.getCause(ex);
         assertEquals(first, result);
     }
 
@@ -33,7 +33,7 @@ class ExceptionUtilTest {
         var second = new RuntimeException(first);
         var ex = new RuntimeException(second);
 
-        Throwable result = Utils.getCause(ex);
+        Throwable result = ExceptionUtil.getCause(ex);
         assertEquals(first, result);
     }
 }

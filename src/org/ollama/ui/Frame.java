@@ -167,7 +167,7 @@ public final class Frame extends JFrame {
         return chat;
     }
 
-    void showErrorInChat(Throwable ex) {
+    void showError(Throwable ex) {
         chatPane.addError(ExceptionUtil.getCause(ex).getMessage());
     }
 }

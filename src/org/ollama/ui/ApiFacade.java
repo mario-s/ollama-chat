@@ -27,10 +27,13 @@ final class ApiFacade {
     private final SiteClient siteClient;
 
     ApiFacade(Frame frame){
-        this.frame = frame;
+        this(frame, new ApiClient(), new SiteClient());
+    }
 
-        apiClient = new ApiClient();
-        siteClient = new SiteClient();
+    ApiFacade(Frame frame, ApiClient apiClient, SiteClient siteClient) {
+        this.frame = frame;
+        this.apiClient = apiClient;
+        this.siteClient = siteClient;
     }
 
     Chat createChat(String model) {
@@ -46,7 +49,7 @@ final class ApiFacade {
                     apiClient.pullModel(name);
                 } catch (Exception ex) {
                     LOG.warn(ex.getMessage(), ex);
-                    frame.showErrorInChat(ex);
+                    frame.showError(ex);
                 }
                 return new Object();
             }
@@ -62,7 +65,7 @@ final class ApiFacade {
         execute(apiClient::getLocalModels, l -> consumer.accept(l));
     }
 
-    private <T> void execute(Supplier<T> supplier, Consumer<T> consumer) {
+    <T> void execute(Supplier<T> supplier, Consumer<T> consumer) {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         SwingWorker<T, Void> worker = new SwingWorker<>() {
 
@@ -79,7 +82,7 @@ final class ApiFacade {
                     }
                 } catch (Exception ex) {
                     LOG.warn(ex.getMessage(), ex);
-                    frame.showErrorInChat(ex);
+                    frame.showError(ex);
                 } finally {
                     frame.lock(false);
                 }
