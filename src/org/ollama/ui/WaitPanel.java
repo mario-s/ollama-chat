@@ -20,12 +20,4 @@ final class WaitPanel extends JPanel {
         g.setColor(new Color(0, 0, 0, 50));
         g.fillRect(0, 0, getWidth(), getHeight());
     }
-
-    void lock() {
-        SwingUtilities.invokeLater(() -> setVisible(true));
-    }
-
-    void unlock() {
-        SwingUtilities.invokeLater(() -> setVisible(false));
-    }
 }

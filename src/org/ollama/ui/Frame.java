@@ -7,11 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -26,7 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -48,6 +42,7 @@ public final class Frame extends JFrame {
     private final InputArea input;
     private final JButton submit;
     private final WaitPanel wait;
+    private final Worker worker;
 
     private Chat chat;
 
@@ -60,8 +55,9 @@ public final class Frame extends JFrame {
         modelPanel = new ModelPanel();
         chatPane = new ChatPane();
         input = new InputArea("What is in your mind?");
-        wait = new WaitPanel();
         submit = new JButton();
+        wait = new WaitPanel();
+        worker = new Worker(this);
 
         buildUi();
         addActions();
@@ -114,7 +110,7 @@ public final class Frame extends JFrame {
                 if (hasNoInput()) {
                     return;
                 }
-                invoke(() -> ask(), a -> {
+                worker.execute(() -> ask(), a -> {
                     chatPane.addAnswer(a);
                     input.requestFocus();
                 });
@@ -127,23 +123,7 @@ public final class Frame extends JFrame {
             .put(KeyStroke.getKeyStroke("control ENTER"), "submit");
         input.getActionMap().put("submit", action);
 
-        modelPanel.addPullActionListener(e -> {
-            SwingWorker<Object, Void> worker = new SwingWorker<>() {
-
-                @Override
-                protected Object doInBackground() throws Exception {
-                    try {
-                        apiClient.pullModel(modelPanel.getSelectedRemoteModel());
-                    } catch (IOException ex) {
-                        LOG.warn(ex.getMessage(), ex);
-                        showErrorInChat(ex);
-                    }
-                    return new Object();
-                }
-
-            };
-            worker.execute();
-        });
+        modelPanel.addPullActionListener(e -> worker.pullModel(modelPanel.getSelectedRemoteModel()));
         modelPanel.addRefreshActionListener(e -> loadLocalModels());
     }
 
@@ -155,13 +135,17 @@ public final class Frame extends JFrame {
         loadModels();
     }
 
+    void lock(boolean l) {
+        SwingUtilities.invokeLater(() -> wait.setVisible(l));
+    }
+
     private void loadModels() {
-        invoke(siteClient::getRemoteModels, modelPanel::setRemoteModels);
+        worker.execute(siteClient::getRemoteModels, modelPanel::setRemoteModels);
         loadLocalModels();
     }
 
     private void loadLocalModels() {
-        invoke(apiClient::getLocalModels, modelPanel::setLocalModels);
+        worker.execute(apiClient::getLocalModels, modelPanel::setLocalModels);
     }
 
     private boolean hasNoInput() {
@@ -187,42 +171,11 @@ public final class Frame extends JFrame {
         return chat;
     }
 
-    private void showErrorInChat(Throwable ex) {
+    void showErrorInChat(Throwable ex) {
         chatPane.addError(ExceptionUtil.getCause(ex).getMessage());
     }
 
-    private <T> void invoke(Supplier<T> supplier, Consumer<T> consumer) {
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        SwingWorker<T, Void> worker = new SwingWorker<>() {
-
-            @Override
-            protected T doInBackground() throws Exception {
-                return supplier.get();
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    if (!isCancelled()) {
-                        consumer.accept(get());
-                    }
-                } catch (Exception ex) {
-                    LOG.warn(ex.getMessage(), ex);
-                    showErrorInChat(ex);
-                } finally {
-                    wait.unlock();
-                }
-            }
-        };
-
-        wait.lock();
-        worker.execute();
-        scheduler.schedule(() -> {
-            if (!worker.isDone()) {
-                worker.cancel(true);
-                wait.unlock();
-                LOG.info("Task ran into timeout");
-            }
-        }, 60, TimeUnit.SECONDS);
+    ApiClient getApiClient() {
+        return apiClient;
     }
 }
