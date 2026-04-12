@@ -21,20 +21,24 @@ import org.slf4j.LoggerFactory;
 /**
  * A client that interacts with the Ollama web site.
  */
-public class SiteClient {
+final class SiteClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(SiteClient.class);
 
     private final String tagsUrl;
     private final HttpClient client;
 
-    public SiteClient(Config config) {
+    SiteClient(Config config) {
         this(config.tags());
     }
 
-    public SiteClient(String tagsUrl) {
+    SiteClient(String tagsUrl) {
+        this(tagsUrl, HttpClient.newHttpClient());
+    }
+
+    SiteClient(String tagsUrl, HttpClient client) {
         this.tagsUrl = tagsUrl;
-        client = HttpClient.newHttpClient();
+        this.client = client;
     }
 
     /**
@@ -46,7 +50,7 @@ public class SiteClient {
      *
      * @return A collection of available models.
      */
-    public List<Model> getRemoteModels() {
+    List<Model> getModels() {
         List<Model> models = Collections.emptyList();
 
         HttpRequest request = HttpRequest.newBuilder()

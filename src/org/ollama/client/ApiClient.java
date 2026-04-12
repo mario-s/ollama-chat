@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The client to interact with a (local) Ollama server.
  */
-public class ApiClient {
+final class ApiClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApiClient.class);
 
@@ -35,7 +35,7 @@ public class ApiClient {
         this.ollama = ollama;
     }
 
-    public void pullModel(String name) throws IOException {
+    void pullModel(String name) throws IOException {
         LOG.info("pulling model {}", name);
         try {
             ollama.pullModel(name);
@@ -49,7 +49,7 @@ public class ApiClient {
      * Get the local available models in an alphabetic sorted order.
      * @return a collection of local models
      */
-    public List<Model> getLocalModels() {
+    List<Model> getModels() {
         List<Model> models = Collections.emptyList();
         try {
             models = ollama.listModels();
@@ -64,7 +64,7 @@ public class ApiClient {
         return models;
     }
 
-    public Chat createChat(String model) {
+    Chat createChat(String model) {
         if (model == null || model.isBlank()) {
             throw new IllegalArgumentException("missing model!");
         }

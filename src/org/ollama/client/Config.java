@@ -1,5 +1,5 @@
 package org.ollama.client;
 
-public record Config (
+record Config (
     String api,
     String tags) {}

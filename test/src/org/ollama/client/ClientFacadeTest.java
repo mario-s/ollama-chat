@@ -1,4 +1,4 @@
-package org.ollama.ui;
+package org.ollama.client;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.ollama.client.ApiClient;
-import org.ollama.client.SiteClient;
 
 import static org.mockito.Mockito.verify;
 
@@ -21,9 +19,6 @@ class ClientFacadeTest {
     private static final String NAME = "foo";
 
     @Mock
-    private Frame frame;
-
-    @Mock
     private ApiClient apiClient;
 
     @Mock
@@ -33,7 +28,7 @@ class ClientFacadeTest {
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new ClientFacade(frame, apiClient, siteClient);
+        classUnderTest = new ClientFacade(apiClient, siteClient);
     }
 
     @Test
@@ -46,9 +41,25 @@ class ClientFacadeTest {
 
     @Test
     @DisplayName("It should use the ApiClient to pull a model")
-    void pullModelSync() throws Exception {
-        classUnderTest.pullModelSync(NAME);
+    void pullModel() throws Exception {
+        classUnderTest.pullModel(NAME);
 
         verify(apiClient).pullModel(NAME);
+    }
+
+    @Test
+    @DisplayName("It should use the ApiClient to load local models")
+    void getLocalModels() throws Exception {
+        classUnderTest.getLocalModels();
+
+        verify(apiClient).getModels();
+    }
+
+    @Test
+    @DisplayName("It should use the SiteClient to load models from ollama.com")
+    void getRemoteModels() throws Exception {
+        classUnderTest.getRemoteModels();
+
+        verify(siteClient).getModels();
     }
 }

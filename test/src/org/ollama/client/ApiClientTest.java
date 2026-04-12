@@ -43,14 +43,14 @@ class ApiClientTest {
 
     @Test
     @DisplayName("It should return a ordered list of models")
-    void getLocalModels() throws Exception {
+    void getModels() throws Exception {
         Model m1 = new Model();
         m1.setName("a");
         Model m2 = new Model();
         m2.setName("b");
         when(ollama.listModels()).thenReturn(new ArrayList(List.of(m2, m1)));
 
-        List<Model> models = classUnderTest.getLocalModels();
+        List<Model> models = classUnderTest.getModels();
         assertEquals(models.getFirst(), m1);
     }
 

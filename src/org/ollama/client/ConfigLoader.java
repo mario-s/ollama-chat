@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class ConfigLoader {
+final class ConfigLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
 
@@ -19,11 +19,11 @@ public final class ConfigLoader {
 
     private final ObjectMapper mapper;
 
-    public ConfigLoader() {
+    ConfigLoader() {
         this.mapper = new ObjectMapper(new YAMLFactory());
     }
 
-    public Config load() {
+    Config load() {
         String home = System.getProperty("user.home");
         Path userHomeConfig = Path.of(home, APP_DIR, FILE_NAME);
         if (Files.exists(userHomeConfig)) {
@@ -45,7 +45,7 @@ public final class ConfigLoader {
         try {
             return mapper.readValue(path.toFile(), Config.class);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
