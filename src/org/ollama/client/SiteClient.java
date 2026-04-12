@@ -75,7 +75,7 @@ public class SiteClient {
     }
 
     /**
-     * Filters out those models, which do not have a versionnummer in name.
+     * Filters out those models, which do not have a version number in th name.
      * @param models
      * @return Collection without elments that do't have a version
      */
