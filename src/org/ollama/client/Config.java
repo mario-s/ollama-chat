@@ -1,6 +1,6 @@
 package org.ollama.client;
 
-record Api (
+record ApiConfig (
     String host,
     long timeout,
     int chatRetries,
@@ -8,5 +8,5 @@ record Api (
 ) {}
 record Config (
     String tags,
-    Api api
+    ApiConfig apiConfig
 ) {}

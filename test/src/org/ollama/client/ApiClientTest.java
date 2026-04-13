@@ -30,7 +30,8 @@ class ApiClientTest {
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new ApiClient(ollama);
+        ApiConfig conf = ConfigLoader.defaultConfig().apiConfig();
+        classUnderTest = new ApiClient(ollama, conf);
     }
 
     @Test

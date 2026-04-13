@@ -26,16 +26,15 @@ final class ApiClient {
 
     private final Ollama ollama;
 
-    public ApiClient(Api api) {
-        var olm = new Ollama(api.host());
-        olm.setRequestTimeoutSeconds(api.timeout());
-        olm.setMaxChatToolCallRetries(api.chatRetries());
-        olm.setMetricsEnabled(api.metrics());
-        this(olm);
+    public ApiClient(ApiConfig conf) {
+        this(new Ollama(conf.host()), conf);
     }
 
-    ApiClient(Ollama ollama) {
+    ApiClient(Ollama ollama, ApiConfig conf) {
         this.ollama = ollama;
+        this.ollama.setRequestTimeoutSeconds(conf.timeout());
+        this.ollama.setMaxChatToolCallRetries(conf.chatRetries());
+        this.ollama.setMetricsEnabled(conf.metrics());
     }
 
     void pullModel(String name) throws IOException {

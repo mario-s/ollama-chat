@@ -52,7 +52,7 @@ final class ConfigLoader {
     static Config defaultConfig() {
         return new Config(
             "https://ollama.com/api/tags",
-            new Api(
+            new ApiConfig(
                 "http://localhost:11434",
                 10,
                 3,
