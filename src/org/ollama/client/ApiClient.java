@@ -26,9 +26,12 @@ final class ApiClient {
 
     private final Ollama ollama;
 
-    public ApiClient(Config config) {
-        var o = new Ollama(config.api());
-        this(o);
+    public ApiClient(Api api) {
+        var olm = new Ollama(api.host());
+        olm.setRequestTimeoutSeconds(api.timeout());
+        olm.setMaxChatToolCallRetries(api.chatRetries());
+        olm.setMetricsEnabled(api.metrics());
+        this(olm);
     }
 
     ApiClient(Ollama ollama) {

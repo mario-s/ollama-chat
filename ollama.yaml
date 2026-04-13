@@ -1,2 +1,6 @@
-api: http://localhost:11434
 tags: https://ollama.com/api/tags
+api:
+  host: http://localhost:11434
+  timeout: 20
+  chatRetries: 2
+  metrics: true

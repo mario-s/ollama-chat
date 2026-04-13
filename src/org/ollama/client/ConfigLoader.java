@@ -49,9 +49,14 @@ final class ConfigLoader {
         }
     }
 
-    private static Config defaultConfig() {
+    static Config defaultConfig() {
         return new Config(
-            "http://locahost:11434",
-            "https://ollama.com/api/tags");
+            "https://ollama.com/api/tags",
+            new Api(
+                "http://localhost:11434",
+                10,
+                3,
+            false)
+        );
     }
 }

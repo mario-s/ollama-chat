@@ -28,10 +28,6 @@ final class SiteClient {
     private final String tagsUrl;
     private final HttpClient client;
 
-    SiteClient(Config config) {
-        this(config.tags());
-    }
-
     SiteClient(String tagsUrl) {
         this(tagsUrl, HttpClient.newHttpClient());
     }

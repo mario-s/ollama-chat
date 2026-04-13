@@ -30,7 +30,7 @@ public final class ClientFacade {
     }
 
     ClientFacade(Config config){
-        this(new ApiClient(config), new SiteClient(config));
+        this(new ApiClient(config.api()), new SiteClient(config.tags()));
     }
 
     ClientFacade(ApiClient apiClient, SiteClient siteClient) {
