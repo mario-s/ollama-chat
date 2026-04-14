@@ -1,10 +1,13 @@
 package org.ollama.client;
 
+import java.util.List;
+
 record ApiConfig (
     String host,
     long timeout,
     int chatRetries,
-    boolean metrics
+    boolean metrics,
+    List<String> tools
 ) {}
 record Config (
     String tags,

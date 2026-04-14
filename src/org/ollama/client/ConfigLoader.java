@@ -3,6 +3,7 @@ package org.ollama.client;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -56,7 +57,8 @@ final class ConfigLoader {
                 "http://localhost:11434",
                 10,
                 3,
-            false)
+            false,
+                Collections.emptyList())
         );
     }
 }

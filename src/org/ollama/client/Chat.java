@@ -30,7 +30,7 @@ public final class Chat {
 
     public void setModel(String model) {
         if (model == null || model.isBlank()) {
-            throw new IllegalArgumentException("expected a not empty name for the model");
+            throw new IllegalArgumentException("missing model");
         }
         this.model = model;
     }

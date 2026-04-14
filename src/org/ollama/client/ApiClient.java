@@ -67,9 +67,6 @@ final class ApiClient {
     }
 
     Chat createChat(String model) {
-        if (model == null || model.isBlank()) {
-            throw new IllegalArgumentException("missing model!");
-        }
         return new Chat(ollama, model);
     }
 }
