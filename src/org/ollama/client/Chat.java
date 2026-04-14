@@ -19,12 +19,20 @@ public final class Chat {
 
     private final Ollama ollama;
 
-    private OllamaChatRequest builder;
+    private String model;
+
     private OllamaChatResult chatResult;
 
     Chat(Ollama ollama, String model) {
         this.ollama = ollama;
-        builder = OllamaChatRequest.builder().withModel(model);
+        setModel(model);
+    }
+
+    public void setModel(String model) {
+        if (model == null || model.isBlank()) {
+            throw new IllegalArgumentException("expected a not empty name for the model");
+        }
+        this.model = model;
     }
 
     public String chat(String question) {
@@ -32,22 +40,21 @@ public final class Chat {
             return "";
         }
 
-        OllamaChatRequest requestModel = buildRequestModel(question);
+        OllamaChatRequest request = buildRequest(question);
 
         try {
-            chatResult = ollama.chat(requestModel, null);
+            chatResult = ollama.chat(request, null);
             return chatResult.getResponseModel().getMessage().getResponse();
         } catch (OllamaException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private OllamaChatRequest buildRequestModel(String question) {
+    private OllamaChatRequest buildRequest(String question) {
+        OllamaChatRequest builder = OllamaChatRequest.builder().withModel(model);
         if (chatResult != null) {
             LOG.trace("using chat history");
-            builder = OllamaChatRequest.builder()
-                .withModel(builder.getModel())
-                .withMessages(chatResult.getChatHistory());
+            builder.withMessages(chatResult.getChatHistory());
         }
 
         return builder.withMessage(OllamaChatMessageRole.USER, question).build();

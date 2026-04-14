@@ -18,6 +18,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.isNull;
 import static org.mockito.Mockito.when;
@@ -53,6 +54,12 @@ class ChatTest {
         }
 
         classUnderTest = new Chat(ollama, MODEL);
+    }
+
+    @Test
+    @DisplayName("It should throw an exception when given model is null")
+    void setModel() {
+        assertThrows(IllegalArgumentException.class, () -> classUnderTest.setModel(null));
     }
 
     @Test
