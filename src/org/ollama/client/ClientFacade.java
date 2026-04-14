@@ -8,18 +8,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import javax.swing.SwingWorker;
-
 import io.github.ollama4j.models.response.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * THis facade is the bridge between the ui and client package.
  */
 public final class ClientFacade {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ClientFacade.class);
+
     private final ApiClient apiClient;
     private final SiteClient siteClient;
 
+    private Chat chat;
 
     public ClientFacade() {
         this(new ConfigLoader());
@@ -38,19 +41,25 @@ public final class ClientFacade {
         this.siteClient = siteClient;
     }
 
-    public Chat createChat(String model) {
-        return apiClient.createChat(model);
-    }
-
-    public void pullModel(String name) throws IOException {
-        apiClient.pullModel(name);
-    }
-
     public List<Model> getRemoteModels() {
         return siteClient.getModels();
     }
 
     public List<Model> getLocalModels() {
         return apiClient.getModels();
+    }
+
+    public void pullModel(String name) throws IOException {
+        apiClient.pullModel(name);
+    }
+
+    public Chat getChat(String model) {
+        LOG.debug("using model {} for chat", model);
+        if (chat == null) {
+            chat = apiClient.createChat(model);
+        } else {
+            chat.setModel(model);
+        }
+        return chat;
     }
 }

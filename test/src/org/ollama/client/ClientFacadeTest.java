@@ -34,7 +34,7 @@ class ClientFacadeTest {
     @Test
     @DisplayName("It should use the ApiClient to create a chat")
     void createChat() {
-        classUnderTest.createChat(NAME);
+        classUnderTest.getChat(NAME);
 
         verify(apiClient).createChat(NAME);
     }

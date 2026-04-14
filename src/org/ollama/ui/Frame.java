@@ -178,13 +178,7 @@ public final class Frame extends JFrame {
 
     private Chat getChat() {
         String model = modelPanel.getSelectedLocalModel();
-        LOG.debug("using model {} for chat", model);
-        if (chat == null) {
-            chat = facade.createChat(model);
-        } else {
-            chat.setModel(model);
-        }
-        return chat;
+        return facade.getChat(model);
     }
 
     void showError(Throwable ex) {
