@@ -58,7 +58,9 @@ final class ConfigLoader {
                 10,
                 3,
             false,
-                Collections.emptyList())
+                new Mcp(
+                    "",
+                false))
         );
     }
 }

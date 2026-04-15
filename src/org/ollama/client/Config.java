@@ -1,13 +1,15 @@
 package org.ollama.client;
 
-import java.util.List;
-
+record Mcp (
+    String jsonPath,
+    boolean use
+) {}
 record ApiConfig (
     String host,
     long timeout,
     int chatRetries,
     boolean metrics,
-    List<String> tools
+    Mcp mcp
 ) {}
 record Config (
     String tags,

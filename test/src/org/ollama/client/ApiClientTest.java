@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +32,13 @@ class ApiClientTest {
     @BeforeEach
     void setUp() {
         ApiConfig conf = ConfigLoader.defaultConfig().apiConfig();
-        classUnderTest = new ApiClient(ollama, conf);
+        classUnderTest = new ApiClient(conf, ollama);
+    }
+
+    @Test
+    @DisplayName("It should not support mcp with the default config")
+    void hasMcp() {
+        assertFalse(classUnderTest.hasMcp());
     }
 
     @Test

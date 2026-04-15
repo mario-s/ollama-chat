@@ -25,16 +25,39 @@ final class ApiClient {
     private static final Logger LOG = LoggerFactory.getLogger(ApiClient.class);
 
     private final Ollama ollama;
+    private final Mcp mcp;
+    private boolean validMcp;
 
     public ApiClient(ApiConfig conf) {
-        this(new Ollama(conf.host()), conf);
+        this(conf, new Ollama(conf.host()));
     }
 
-    ApiClient(Ollama ollama, ApiConfig conf) {
+    ApiClient(ApiConfig conf, Ollama ollama) {
+        this.mcp = conf.mcp();
         this.ollama = ollama;
         this.ollama.setRequestTimeoutSeconds(conf.timeout());
         this.ollama.setMaxChatToolCallRetries(conf.chatRetries());
         this.ollama.setMetricsEnabled(conf.metrics());
+
+        loadMcpConfig();
+    }
+
+    private void loadMcpConfig() {
+        String jp = mcp.jsonPath();
+        if (jp == null || jp.isBlank()) {
+            return;
+        }
+        try {
+            ollama.loadMCPToolsFromJson(mcp.jsonPath());
+            validMcp = true;
+        } catch (IOException exc) {
+            LOG.warn("unable to load MCP tool", exc);
+        }
+    }
+
+    private boolean hasValidMcpPath() {
+        String jp = mcp.jsonPath();
+        return jp != null && !jp.isBlank();
     }
 
     void pullModel(String name) throws IOException {
@@ -68,5 +91,9 @@ final class ApiClient {
 
     Chat createChat(String model) {
         return new Chat(ollama, model);
+    }
+
+    boolean hasMcp() {
+        return validMcp;
     }
 }
