@@ -4,3 +4,5 @@ apiConfig:
   timeout: 20
   chatRetries: 2
   metrics: true
+  mcp:
+    jsonPath: "./json"

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import io.github.ollama4j.models.chat.OllamaChatMessageRole;
@@ -25,7 +26,7 @@ final class ApiClient {
     private static final Logger LOG = LoggerFactory.getLogger(ApiClient.class);
 
     private final Ollama ollama;
-    private final Mcp mcp;
+    private final ApiConfig conf;
     private boolean validMcp;
 
     public ApiClient(ApiConfig conf) {
@@ -33,31 +34,27 @@ final class ApiClient {
     }
 
     ApiClient(ApiConfig conf, Ollama ollama) {
-        this.mcp = conf.mcp();
+        this.conf = conf;
         this.ollama = ollama;
         this.ollama.setRequestTimeoutSeconds(conf.timeout());
         this.ollama.setMaxChatToolCallRetries(conf.chatRetries());
         this.ollama.setMetricsEnabled(conf.metrics());
 
-        loadMcpConfig();
+        loadMcpTools();
     }
 
-    private void loadMcpConfig() {
-        String jp = mcp.jsonPath();
-        if (jp == null || jp.isBlank()) {
-            return;
-        }
-        try {
-            ollama.loadMCPToolsFromJson(mcp.jsonPath());
-            validMcp = true;
-        } catch (IOException exc) {
-            LOG.warn("unable to load MCP tool", exc);
-        }
-    }
-
-    private boolean hasValidMcpPath() {
-        String jp = mcp.jsonPath();
-        return jp != null && !jp.isBlank();
+    private void loadMcpTools() {
+        conf.getMcp().flatMap(Mcp::getJsonPath)
+            .filter(Objects::nonNull)
+            .filter(s -> !s.isBlank())
+            .ifPresent(jp -> {
+                try {
+                    ollama.loadMCPToolsFromJson(jp);
+                    validMcp = true;
+                } catch (IOException exc) {
+                    LOG.warn("unable to load MCP tool", exc);
+                }
+            });
     }
 
     void pullModel(String name) throws IOException {

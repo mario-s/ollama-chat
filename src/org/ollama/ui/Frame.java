@@ -29,7 +29,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-import org.ollama.client.Chat;
 import org.ollama.client.ClientFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +43,6 @@ public final class Frame extends JFrame {
     private final JButton submit;
     private final WaitPanel wait;
     private final ClientFacade facade;
-
-    private Chat chat;
 
     public Frame() {
         super("Ollama Chat");
@@ -165,20 +162,16 @@ public final class Frame extends JFrame {
     }
 
     private String ask() {
-        String q = retrieveQuestion();
-        chatPane.addQuestion(q);
-        return getChat().chat(q);
+        String model = modelPanel.getSelectedLocalModel();
+        String question = retrieveQuestion();
+        chatPane.addQuestion(question);
+        return facade.chat(model, question);
     }
 
     private String retrieveQuestion() {
         String q = input.getText();
         input.setText("");
         return q;
-    }
-
-    private Chat getChat() {
-        String model = modelPanel.getSelectedLocalModel();
-        return facade.getChat(model);
     }
 
     void showError(Throwable ex) {

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class holds the user's conversation with the model.
  */
-public final class Chat {
+final class Chat {
 
     private static final Logger LOG = LoggerFactory.getLogger(Chat.class);
 
@@ -28,14 +28,14 @@ public final class Chat {
         setModel(model);
     }
 
-    public void setModel(String model) {
+    void setModel(String model) {
         if (model == null || model.isBlank()) {
             throw new IllegalArgumentException("missing model");
         }
         this.model = model;
     }
 
-    public String chat(String question) {
+    String chat(String question) {
         if (question == null || question.isBlank()) {
             return "";
         }

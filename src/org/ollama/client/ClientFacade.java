@@ -53,7 +53,11 @@ public final class ClientFacade {
         apiClient.pullModel(name);
     }
 
-    public Chat getChat(String model) {
+    public String chat(String model, String question) {
+        return getChat(model).chat(question);
+    }
+
+    Chat getChat(String model) {
         LOG.debug("using model {} for chat", model);
         if (chat == null) {
             chat = apiClient.createChat(model);
