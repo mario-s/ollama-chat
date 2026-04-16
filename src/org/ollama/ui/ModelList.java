@@ -45,10 +45,10 @@ final class ModelList extends JComboBox<Model> implements FocusListener {
 
     Optional<Model> getSelectedModel() {
         Object item = getSelectedItem();
-        return switch(item) {
-            case Model model -> of(model);
-            default -> empty();
-        };
+        if (item instanceof Model model) {
+            return of(model);
+        }
+        return empty();
     }
 
     @Override
