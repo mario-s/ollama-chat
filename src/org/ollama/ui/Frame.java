@@ -68,33 +68,47 @@ public final class Frame extends JFrame {
         getRootPane().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         setLayout(gridbag);
 
-        cnt.fill = GridBagConstraints.HORIZONTAL;
         cnt.gridx = 0;
         cnt.gridy = 0;
         cnt.gridwidth = 3;
+        cnt.weightx = 1;
+        cnt.weighty = 0;
+        cnt.fill = GridBagConstraints.HORIZONTAL;
         cnt.insets = new Insets(0,0, 5,0);
         getContentPane().add(modelPanel, cnt);
 
         cnt.gridx = 0;
         cnt.gridy = 1;
-        cnt.ipady = 300;
-        cnt.weightx = 0.5;
+        cnt.gridwidth = 3;
+        cnt.weightx = 1;
+        cnt.weighty = 1;
+        cnt.fill = GridBagConstraints.BOTH;
+        cnt.ipady = 0;
 
         getContentPane().add(new JScrollPane(chatPane), cnt);
         chatPane.setBorder(lowered);
 
-        cnt.gridwidth = 3;
         cnt.gridx = 0;
         cnt.gridy = 2;
+        cnt.gridwidth = 2;
+        cnt.weightx = 1;
+        cnt.weighty = 0;
+        cnt.fill = GridBagConstraints.HORIZONTAL;
         cnt.ipady = 100;
+        cnt.anchor = GridBagConstraints.CENTER;
+        cnt.insets = new Insets(10,0,0,10);
         getContentPane().add(new JScrollPane(input), cnt);
         input.setBorder(lowered);
 
-        cnt.gridx = 1;
-        cnt.gridy = 3;
+        cnt.gridx = 2;
+        cnt.gridy = 2;
+        cnt.gridwidth = 1;
+        cnt.weightx = 0;
+        cnt.weighty = 0;
+        cnt.fill = GridBagConstraints.NONE;
         cnt.ipady = 0;
-        cnt.anchor = GridBagConstraints.PAGE_END;
-        cnt.insets = new Insets(10,50,0,50);
+        cnt.anchor = GridBagConstraints.NORTH;
+        cnt.insets = new Insets(10,0,0,0);
         getContentPane().add(submit, cnt);
 
         setGlassPane(wait);
