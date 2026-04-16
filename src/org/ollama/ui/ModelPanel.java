@@ -5,10 +5,10 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -82,6 +82,15 @@ final class ModelPanel extends JPanel {
 
     void addRefreshActionListener(ActionListener l) {
         btnReload.addActionListener(l);
+    }
+
+    void addLocalModelSelectionListener(Consumer<String> listener) {
+        localList.addActionListener(e -> {
+            String model = getSelectedLocalModel();
+            if (!model.isBlank()) {
+                listener.accept(model);
+            }
+        });
     }
 
     void setRemoteModels(List<Model> models) {

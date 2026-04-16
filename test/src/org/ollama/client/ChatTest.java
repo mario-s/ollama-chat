@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.isNull;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -62,8 +61,28 @@ class ChatTest {
     @Test
     @DisplayName("It should return an answer to a question")
     void chat() throws Exception {
+        setupMockChatBehavior(MODEL);
+
+        String r = classUnderTest.chat(QUESTION);
+        assertEquals(ANSWER, r);
+    }
+
+    @Test
+    @DisplayName("It should update model when setModel is called")
+    void updateModel() throws Exception {
+        String newModel = "newModel";
+        classUnderTest.setModel(newModel);
+
+        // Verify by checking chat still works with new model
+        setupMockChatBehavior(newModel);
+
+        String result = classUnderTest.chat(QUESTION);
+        assertEquals(ANSWER, result);
+    }
+
+    private void setupMockChatBehavior(String model) throws Exception {
         doReturn(chatRequest).when(classUnderTest).newBuilder();
-        when(chatRequest.withModel(MODEL)).thenReturn(chatRequest);
+        when(chatRequest.withModel(model)).thenReturn(chatRequest);
         when(chatRequest.withUseTools(true)).thenReturn(chatRequest);
         when(chatRequest.withMessage(OllamaChatMessageRole.USER, QUESTION)).thenReturn(chatRequest);
         when(chatRequest.build()).thenReturn(chatRequest);
@@ -72,9 +91,5 @@ class ChatTest {
         when(chatResult.getResponseModel()).thenReturn(responseModel);
         when(responseModel.getMessage()).thenReturn(chatMessage);
         when(chatMessage.getResponse()).thenReturn(ANSWER);
-
-        String r = classUnderTest.chat(QUESTION);
-
-        assertEquals(ANSWER, r);
     }
 }

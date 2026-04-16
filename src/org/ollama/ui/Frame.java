@@ -50,7 +50,7 @@ public final class Frame extends JFrame {
 
         modelPanel = new ModelPanel();
         chatPane = new ChatPane();
-        input = new InputArea("What is in your mind?");
+        input = new InputArea("What do you have in mind?");
         submit = new JButton();
         wait = new WaitPanel();
         facade = new ClientFacade();
@@ -100,6 +100,7 @@ public final class Frame extends JFrame {
     }
 
     private void addActions() {
+
         var action = new AbstractAction("▶️") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -137,6 +138,7 @@ public final class Frame extends JFrame {
             worker.execute();
         });
         modelPanel.addRefreshActionListener(e -> loadLocalModels());
+        modelPanel.addLocalModelSelectionListener(m -> facade.setChatModel(m));
     }
 
     public void display() {
@@ -162,10 +164,9 @@ public final class Frame extends JFrame {
     }
 
     private String ask() {
-        String model = modelPanel.getSelectedLocalModel();
         String question = retrieveQuestion();
         chatPane.addQuestion(question);
-        return facade.chat(model, question);
+        return facade.chat(question);
     }
 
     private String retrieveQuestion() {
