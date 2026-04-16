@@ -95,7 +95,6 @@ public final class Frame extends JFrame {
         cnt.weighty = 0;
         cnt.fill = GridBagConstraints.HORIZONTAL;
         cnt.ipady = 100;
-        cnt.anchor = GridBagConstraints.CENTER;
         cnt.insets = new Insets(10,0,0,10);
         getContentPane().add(new JScrollPane(input), cnt);
         input.setBorder(lowered);
@@ -158,6 +157,7 @@ public final class Frame extends JFrame {
 
     public void display() {
         setSize(600, 620);
+        setMinimumSize(getSize());
         setLocationRelativeTo(null);
         setVisible(true);
 
