@@ -1,4 +1,5 @@
 tags: https://ollama.com/api/tags
+searchUrl: https://ollama.com/search
 apiConfig:
   host: http://localhost:11434
   timeout: 20

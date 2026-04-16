@@ -48,12 +48,13 @@ public final class Frame extends JFrame {
         super("Ollama Chat");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        modelPanel = new ModelPanel();
+        facade = new ClientFacade();
+
+        modelPanel = new ModelPanel(facade.getSearchUrl());
         chatPane = new ChatPane();
         input = new InputArea("What do you have in mind?");
         submit = new JButton();
         wait = new WaitPanel();
-        facade = new ClientFacade();
 
         buildUi();
         addActions();

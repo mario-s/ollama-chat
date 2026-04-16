@@ -1,10 +1,17 @@
 package org.ollama.ui;
 
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
@@ -14,10 +21,18 @@ import javax.swing.JPanel;
 
 import io.github.ollama4j.models.response.Model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static java.awt.Desktop.getDesktop;
+import static java.awt.Desktop.isDesktopSupported;
+
 /**
  * THe panel to deal with models.
  */
 final class ModelPanel extends JPanel {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ModelPanel.class);
 
     private final ModelList remoteList;
     private final ModelList localList;
@@ -25,6 +40,10 @@ final class ModelPanel extends JPanel {
     private final JButton btnReload;
 
     ModelPanel() {
+        this(null);
+    }
+
+    ModelPanel(Optional<String> searchUrl) {
         this.remoteList = new ModelList();
         this.remoteList.setEditable(true);
         this.btnPull = new JButton("⬇️");
@@ -47,7 +66,7 @@ final class ModelPanel extends JPanel {
         cnt.gridy = 0;
         cnt.weightx = 0.5;
         cnt.insets = new Insets(0,5,0,5);
-        add(new JLabel("Remote:"), cnt);
+        add(createRemoteLabel(searchUrl), cnt);
 
         cnt.gridx = 1;
         cnt.gridy = 0;
@@ -107,5 +126,38 @@ final class ModelPanel extends JPanel {
 
     String getSelectedRemoteModel() {
         return remoteList.getSelectedModel().map(Model::getName).orElse("");
+    }
+
+    private JLabel createRemoteLabel(Optional<String> searchUrl) {
+        String url = searchUrl.orElse("");
+        if (url.isBlank()) {
+            return new JLabel("Remote:");
+        }
+        
+        JLabel label = new JLabel("<html><u>Remote:</u></html>");
+        label.setForeground(Color.BLUE);
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        label.setToolTipText("Click to open " + url);
+        
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                openBrowser(url);
+            }
+        });
+        
+        return label;
+    }
+
+    private void openBrowser(String url) {
+        try {
+            if (isDesktopSupported() && getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                getDesktop().browse(new URI(url));
+            } else {
+                LOG.warn("Desktop browsing not supported");
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to open browser: {}", e.getMessage(), e);
+        }
     }
 }

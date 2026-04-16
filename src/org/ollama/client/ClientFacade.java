@@ -2,6 +2,7 @@ package org.ollama.client;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,7 @@ public final class ClientFacade {
 
     private final ApiClient apiClient;
     private final SiteClient siteClient;
+    private final Config config;
 
     private Chat chat;
 
@@ -33,12 +35,13 @@ public final class ClientFacade {
     }
 
     ClientFacade(Config config){
-        this(new ApiClient(config.apiConfig()), new SiteClient(config.tags()));
+        this(config, new ApiClient(config.apiConfig()), new SiteClient(config.tags()));
     }
 
-    ClientFacade(ApiClient apiClient, SiteClient siteClient) {
+    ClientFacade(Config config, ApiClient apiClient, SiteClient siteClient) {
         this.apiClient = apiClient;
         this.siteClient = siteClient;
+        this.config = config;
     }
 
     /**
@@ -96,6 +99,15 @@ public final class ClientFacade {
             throw new IllegalStateException("No model selected");
         }
         return chat.chat(question);
+    }
+
+    /**
+     * Returns the URL to search the models repository.
+     *
+     * @return the base URL where models can be browsed
+     */
+    public Optional<String> getSearchUrl() {
+        return config.getSearchUrl();
     }
 
     Chat getChat(String model) {

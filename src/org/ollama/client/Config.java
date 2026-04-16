@@ -12,6 +12,7 @@ record Mcp (
         return ofNullable(jsonPath);
     }
 }
+
 record ApiConfig (
     String host,
     long timeout,
@@ -23,7 +24,13 @@ record ApiConfig (
         return ofNullable(mcp);
     }
 }
+
 record Config (
     String tags,
+    String searchUrl,
     ApiConfig apiConfig
-) {}
+) {
+    Optional<String> getSearchUrl() {
+        return ofNullable(searchUrl);
+    }
+}

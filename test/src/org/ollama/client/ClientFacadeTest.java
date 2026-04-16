@@ -33,7 +33,8 @@ class ClientFacadeTest {
 
     @BeforeEach
     void setUp() {
-        classUnderTest = new ClientFacade(apiClient, siteClient);
+        var conf = ConfigLoader.defaultConfig();
+        classUnderTest = new ClientFacade(conf, apiClient, siteClient);
     }
 
     @Test
