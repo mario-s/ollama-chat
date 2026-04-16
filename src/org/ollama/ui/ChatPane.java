@@ -53,6 +53,7 @@ final class ChatPane extends JTextPane{
         var txt = String.format("%s\r\n\r\n", text);
         try {
             doc.insertString(doc.getLength(), txt, style);
+            setCaretPosition(doc.getLength());
         } catch (BadLocationException e) {
             throw new IllegalStateException(e);
         }
