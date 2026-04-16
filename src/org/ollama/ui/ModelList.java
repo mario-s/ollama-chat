@@ -1,7 +1,6 @@
 package org.ollama.ui;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -9,10 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JTextField;
-import javax.swing.Timer;
 import javax.swing.text.JTextComponent;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;

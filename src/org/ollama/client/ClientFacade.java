@@ -2,7 +2,6 @@ package org.ollama.client;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import io.github.ollama4j.models.response.Model;
 
