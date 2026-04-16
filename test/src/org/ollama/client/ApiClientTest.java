@@ -36,9 +36,9 @@ class ApiClientTest {
     }
 
     @Test
-    @DisplayName("It should not support mcp with the default config")
+    @DisplayName("It should not use tools with the default config")
     void hasMcp() {
-        assertFalse(classUnderTest.hasMcp());
+        assertFalse(classUnderTest.isUseTools());
     }
 
     @Test

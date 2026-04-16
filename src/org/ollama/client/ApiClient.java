@@ -1,12 +1,10 @@
 package org.ollama.client;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import io.github.ollama4j.models.chat.OllamaChatMessageRole;
 import io.github.ollama4j.models.chat.OllamaChatRequest;
@@ -27,7 +25,8 @@ final class ApiClient {
 
     private final Ollama ollama;
     private final ApiConfig conf;
-    private final boolean validMcp;
+
+    private boolean existsTools;
 
     public ApiClient(ApiConfig conf) {
         this(conf, new Ollama(conf.host()));
@@ -40,18 +39,25 @@ final class ApiClient {
         this.ollama.setMaxChatToolCallRetries(conf.chatRetries());
         this.ollama.setMetricsEnabled(conf.metrics());
 
-        validMcp = conf.getMcp().flatMap(Mcp::getJsonPath)
-            .filter(Objects::nonNull)
-            .filter(s -> !s.isBlank())
-            .map(jp -> {
-                try {
-                    ollama.loadMCPToolsFromJson(jp);
-                    return true;
-                } catch (IOException exc) {
-                    LOG.warn("unable to load MCP tool", exc);
-                    return false;
-                }
-            }).orElse(false);
+        loadMcpTools();
+    }
+
+    private void loadMcpTools() {
+        if (isUseTools()) {
+            existsTools = conf.getMcp()
+                .flatMap(Mcp::getJsonPath)
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isBlank())
+                .map(jp -> {
+                    try {
+                        ollama.loadMCPToolsFromJson(jp);
+                        return true;
+                    } catch (IOException exc) {
+                        LOG.warn("unable to load MCP tool", exc);
+                        return false;
+                    }
+                }).orElse(false);
+        }
     }
 
     void pullModel(String name) throws IOException {
@@ -84,10 +90,11 @@ final class ApiClient {
     }
 
     Chat createChat(String model) {
-        return new Chat(ollama, model, validMcp);
+        boolean tools = isUseTools() && existsTools;
+        return new Chat(ollama, model, tools);
     }
 
-    boolean hasMcp() {
-        return validMcp;
+    boolean isUseTools() {
+        return conf.getMcp().map(Mcp::use).orElse(false);
     }
 }

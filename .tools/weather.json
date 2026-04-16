@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+        "spring-ai-mcp-weather": {
+            "command": "java",
+            "args": [
+                "-Dspring.ai.mcp.server.stdio=true",
+                "-Dspring.main.web-application-type=none",
+                "-jar",
+                "/Users/mario/develop/java/mcp/weather-server/build/libs/weather-server-0.0.1-SNAPSHOT.jar"
+            ]
+        }
+    }
+}

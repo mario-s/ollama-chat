@@ -5,4 +5,5 @@ apiConfig:
   chatRetries: 2
   metrics: true
   mcp:
-    jsonPath: "./json"
+    jsonPath: "./.tools/weather.json"
+    use: false
