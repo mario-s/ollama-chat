@@ -4,7 +4,6 @@ import io.github.ollama4j.models.chat.OllamaChatMessageRole;
 import io.github.ollama4j.models.chat.OllamaChatRequest;
 import io.github.ollama4j.models.chat.OllamaChatResult;
 import io.github.ollama4j.Ollama;
-import io.github.ollama4j.models.response.Model;
 import io.github.ollama4j.exceptions.OllamaException;
 
 import org.slf4j.Logger;
@@ -18,13 +17,15 @@ final class Chat {
     private static final Logger LOG = LoggerFactory.getLogger(Chat.class);
 
     private final Ollama ollama;
+    private final boolean useTool;
 
     private String model;
 
     private OllamaChatResult chatResult;
 
-    Chat(Ollama ollama, String model) {
+    Chat(Ollama ollama, String model, boolean useTool) {
         this.ollama = ollama;
+        this.useTool = useTool;
         setModel(model);
     }
 
@@ -51,12 +52,17 @@ final class Chat {
     }
 
     private OllamaChatRequest buildRequest(String question) {
-        OllamaChatRequest builder = OllamaChatRequest.builder().withModel(model);
+        OllamaChatRequest builder = newBuilder().withModel(model).withUseTools(useTool);
+
         if (chatResult != null) {
             LOG.trace("using chat history");
             builder.withMessages(chatResult.getChatHistory());
         }
 
         return builder.withMessage(OllamaChatMessageRole.USER, question).build();
+    }
+
+    OllamaChatRequest newBuilder() {
+        return OllamaChatRequest.builder();
     }
 }
