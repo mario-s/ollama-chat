@@ -30,6 +30,8 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
 import org.ollama.client.ClientFacade;
+import org.ollama.config.Config;
+import org.ollama.config.ConfigLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +50,11 @@ public final class Frame extends JFrame {
         super("Ollama Chat");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        facade = new ClientFacade();
+        var loader = new ConfigLoader();
+        Config conf = loader.load();
+        facade = new ClientFacade(conf);
 
-        modelPanel = new ModelPanel(facade.getSearchUrl());
+        modelPanel = new ModelPanel(conf.getSearchUrl());
         chatPane = new ChatPane();
         input = new InputArea("What do you have in mind?");
         submit = new JButton();

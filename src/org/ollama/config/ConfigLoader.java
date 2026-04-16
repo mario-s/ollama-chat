@@ -1,17 +1,19 @@
-package org.ollama.client;
+package org.ollama.config;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import org.ollama.config.Config.ApiConfig;
+import org.ollama.config.Config.ApiConfig.Mcp;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class ConfigLoader {
+public final class ConfigLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
 
@@ -20,11 +22,11 @@ final class ConfigLoader {
 
     private final ObjectMapper mapper;
 
-    ConfigLoader() {
+    public ConfigLoader() {
         this.mapper = new ObjectMapper(new YAMLFactory());
     }
 
-    Config load() {
+    public Config load() {
         String home = System.getProperty("user.home");
         Path userHomeConfig = Path.of(home, APP_DIR, FILE_NAME);
         if (Files.exists(userHomeConfig)) {
@@ -50,7 +52,7 @@ final class ConfigLoader {
         }
     }
 
-    static Config defaultConfig() {
+    public static Config defaultConfig() {
         return new Config(
             "https://ollama.com/api/tags",
             null,

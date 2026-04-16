@@ -6,12 +6,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import io.github.ollama4j.models.chat.OllamaChatMessageRole;
-import io.github.ollama4j.models.chat.OllamaChatRequest;
-import io.github.ollama4j.models.chat.OllamaChatResult;
 import io.github.ollama4j.Ollama;
 import io.github.ollama4j.models.response.Model;
 import io.github.ollama4j.exceptions.OllamaException;
+
+import org.ollama.config.Config.ApiConfig;
+import org.ollama.config.Config.ApiConfig.Mcp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
